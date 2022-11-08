@@ -15,8 +15,30 @@
 
       const drawMap = async () => {
 
+      // Initialize datasets
       const worldmap = await d3.json("countries-50m.json");
+      const happinessreport = await d3.csv("2019.csv");
 
+      ////////////////////////// Data Cleaning /////////////////////////////////
+      // Worldmap country names list
+      worldmap_names = [];
+      worldmap.objects.countries.geometries.forEach( (d, i) => {
+        worldmap_names.push(d.properties.name);
+      });
+
+      // Happinessreport country names list
+      happiness_names = [];
+      happinessreport.forEach( (d, i) => {
+        happiness_names.push(d["Country or region"]);
+      });
+
+      // List of names that need to be manually matched between datasets
+      // TODO: Katherine
+      const names_to_fix = happiness_names.filter(element => !worldmap_names.includes(element));
+      console.log(names_to_fix);
+      //////////////////////////////////////////////////////////////////////////
+
+      // Initialize constants for map generation
       const countries = topojson.feature(worldmap, worldmap.objects.countries);
       const countriesMesh = topojson.mesh(worldmap, worldmap.objects.countries);
       const landMesh = topojson.mesh(worldmap, worldmap.objects.land);
@@ -29,6 +51,7 @@
 
       let viewport = map.append("g"); // g tag for map elements
 
+      // Draw countries and their mesh lines
       viewport.selectAll(".countries").data(countries.features)
               .enter()
               .append("path")
@@ -43,6 +66,7 @@
                               .attr("stroke", "black")
                               .attr("stroke-width", 0.5);
 
+      // Draw land mesh lines
       land_lines = viewport.append("path").datum(landMesh)
                            .attr("class","land-outline")
                            .attr("d", path)
@@ -65,12 +89,12 @@
 
         // Modify the stroke-width of the mesh so the width remains the same regardless of the zoom level
         viewport.select(".county-outline")
-                .style("stroke-width", 1 / transform.k);
+                .style("stroke-width", 0.5 / transform.k);
         viewport.select(".state-outline")
-                .style("stroke-width", 1 / transform.k);
+                .style("stroke-width", 0.75 / transform.k);
         }
 
-      console.log(worldmap);
+      console.log(happinessreport);
 
     }
 
