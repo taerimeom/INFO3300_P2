@@ -9,7 +9,7 @@
 <body><p id="p1">
   <h1> Visualization 1 </h1>
 
-  <svg id= "map" height="770" width="990" style="margin:20px"/>
+  <svg id= "map" height="700" width="800" />
 
   <script>
 
@@ -27,13 +27,50 @@
       let projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
       let path = d3.geoPath().projection(projection);
 
-      
+      let viewport = map.append("g"); // g tag for map elements
 
-      /////////////////////////////////////////////////////////////////////////
-      const nyincome = await d3.json("ny_income.topo.json");
+      viewport.selectAll(".countries").data(countries.features)
+              .enter()
+              .append("path")
+              .attr("class","countries")
+              .attr("d", path)
+              .attr("fill", "gray"); // CHANGE BASED ON HAPPINESS DATA
+
+      country_lines = viewport.append("path").datum(countriesMesh)
+                              .attr("class","country-outline")
+                              .attr("d", path)
+                              .attr("fill" ,"none")
+                              .attr("stroke", "black")
+                              .attr("stroke-width", 0.5);
+
+      land_lines = viewport.append("path").datum(landMesh)
+                           .attr("class","land-outline")
+                           .attr("d", path)
+                           .attr("fill" ,"none")
+                           .attr("stroke", "black")
+                           .attr("stroke-width", 0.75);
+
+      // Zoom Generator
+      var zoom = d3.zoom()
+                   .scaleExtent([1,10])
+                   .translateExtent([[-50,-50],[mapWidth+50,mapHeight+50]])  // to lock to edges
+                   .on("zoom", mapZoom);
+
+      map.call(zoom);
+      map.call(zoom.transform, d3.zoomIdentity);
+
+      function mapZoom({transform}) {
+        // Transform the group object to reflect the zoom action
+        viewport.attr("transform", transform.toString());
+
+        // Modify the stroke-width of the mesh so the width remains the same regardless of the zoom level
+        viewport.select(".county-outline")
+                .style("stroke-width", 1 / transform.k);
+        viewport.select(".state-outline")
+                .style("stroke-width", 1 / transform.k);
+        }
 
       console.log(worldmap);
-      console.log(nyincome);
 
     }
 
