@@ -1,0 +1,45 @@
+<!DOCTYPE html> <html lang= "en"> <head> <meta charset= "utf-8"/> <meta name=
+"viewport" content= "width=device-width, initial-scale=1" />
+
+<script src="https://d3js.org/d3.v7.min.js"></script> <!-- d3 import -->
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+<title>INFO 3300 Project 2 </title> </head>
+
+<body><p id="p1">
+  <h1> Visualization 1 </h1>
+
+  <svg id= "map" height="770" width="990" style="margin:20px"/>
+
+  <script>
+
+      const drawMap = async () => {
+
+      const worldmap = await d3.json("countries-50m.json");
+
+      const countries = topojson.feature(worldmap, worldmap.objects.countries);
+      const countriesMesh = topojson.mesh(worldmap, worldmap.objects.countries);
+      const landMesh = topojson.mesh(worldmap, worldmap.objects.land);
+
+      let map = d3.select("svg#map");
+      let mapWidth = map.attr("width");
+      let mapHeight = map.attr("height");
+      let projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
+      let path = d3.geoPath().projection(projection);
+
+      
+
+      /////////////////////////////////////////////////////////////////////////
+      const nyincome = await d3.json("ny_income.topo.json");
+
+      console.log(worldmap);
+      console.log(nyincome);
+
+    }
+
+    drawMap();
+
+
+    </script>
+
+  </p></body>
