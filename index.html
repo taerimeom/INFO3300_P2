@@ -21,13 +21,13 @@
 
       ////////////////////////// Data Cleaning /////////////////////////////////
       // Worldmap country names list
-      worldmap_names = [];
+      let worldmap_names = [];
       worldmap.objects.countries.geometries.forEach( (d, i) => {
         worldmap_names.push(d.properties.name);
       });
 
       // Happinessreport country names list
-      happiness_names = [];
+      let happiness_names = [];
       happinessreport.forEach( (d, i) => {
         happiness_names.push(d["Country or region"]);
       });
@@ -35,7 +35,7 @@
       // List of names that need to be manually matched between datasets
       // TODO: Katherine
       const names_to_fix = happiness_names.filter(element => !worldmap_names.includes(element));
-      console.log(names_to_fix);
+      //console.log(names_to_fix);
       //////////////////////////////////////////////////////////////////////////
 
       // Initialize constants for map generation
@@ -49,6 +49,10 @@
       let projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
       let path = d3.geoPath().projection(projection);
 
+      // Color scale(s)
+      const happinessExtent = d3.extent(happinessreport, d => d["Score"]);
+      const happiness_color_scale = d3.scaleSequential(d3.interpolateGnBu).domain(happinessExtent);
+
       let viewport = map.append("g"); // g tag for map elements
 
       // Draw countries and their mesh lines
@@ -57,7 +61,7 @@
               .append("path")
               .attr("class","countries")
               .attr("d", path)
-              .attr("fill", "gray"); // CHANGE BASED ON HAPPINESS DATA
+              .attr("fill", d => get_fills(d) );
 
       country_lines = viewport.append("path").datum(countriesMesh)
                               .attr("class","country-outline")
@@ -83,6 +87,7 @@
       map.call(zoom);
       map.call(zoom.transform, d3.zoomIdentity);
 
+      ////////////////////////////// Functions /////////////////////////////////
       function mapZoom({transform}) {
         // Transform the group object to reflect the zoom action
         viewport.attr("transform", transform.toString());
@@ -94,9 +99,28 @@
                 .style("stroke-width", 0.75 / transform.k);
         }
 
-      console.log(happinessreport);
+      function get_fills(country_feature) {
+          // Map the worldmap country with the happiness country and get the
+          // relevant data. If there is a match, color according to the color
+          // scale of the feature. If there is not a match, color light gray
 
-    }
+          country_info = happinessreport.filter(function(k) {return k["Country or region"] === country_feature.properties.name})[0];
+
+          try {
+            score = parseFloat(country_info["Score"]);
+          } catch (TypeError) {
+            score = 0;
+            // console.log("caught");
+          }
+
+          if (score === 0) {
+            return "lightgray";
+          } else {
+            return happiness_color_scale(score);
+          }
+      }
+
+    } // async
 
     drawMap();
 
