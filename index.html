@@ -151,19 +151,64 @@
       let chartArea = svg_country.append("g").attr("id","points")
                       .attr("transform",`translate(${margin.left},${margin.top})`);
 
+      let background = chartArea.append("rect")
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("width", chartWidth)
+          .attr("height", chartHeight)
+          .attr("fill", "lightgrey")
+
       let name = chartArea.append("text")
           .style("opacity", "0")
+          .attr("x", width/2)
+          .attr("y", 30)
+          .attr("text-anchor", "middle")
+          .style("font-size", 30)
+
+      // PIE CHART
+      //var data = [10, 5, 4, 6];
+      //var data = [10, 10, 10, 10];
+      var radius = 100;
+      var color = d3.scaleOrdinal(["red", "orange", "yellow", "green", "blue", "purple"]);
+      var pie = d3.pie();
+      var arc = d3.arc()
+                .innerRadius(10)
+                .outerRadius(radius);
 
       // Mouseover Functions
       mycountries.on("mouseover", function() {
         name.text(d3.select(this).datum().properties.name)
           .style("opacity", "1")
 
+        this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
+        let rank = this_country[0]["Overall rank"];
+        console.log(rank);
+        let freedom = this_country[0]["Freedom to make life choices"];
+        let gdp = this_country[0]["GDP per capita"];
+        let generosity = this_country[0]["Generosity"];
+        let life_expectancy = this_country[0]["Healthy life expectancy"];
+        let corruption = this_country[0]["Perceptions of corruption"];
+        let social_support = this_country[0]["Social support"];
+        let score = this_country[0]["Score"];
+        var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
+
+        var arcs = chartArea.selectAll("arc")
+                  .data(pie(data))
+                  .enter()
+                  .append("g")
+                  .attr("class", "arc")
+                  .attr("transform",`translate(${width/2},${height/2})`);
+
+          arcs.append("path")
+            .attr("fill", function(d, i) {
+                return color(i);
+            })
+            .attr("d", arc);
+
       });
 
       mycountries.on("mouseout", function() {
         name.style("opacity", "0")
-
       });
 
     } // end of async function
