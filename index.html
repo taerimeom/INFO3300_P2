@@ -102,8 +102,8 @@
 
       // Zoom Generator
       var zoom = d3.zoom()
-                   .scaleExtent([1,10])
-                   .translateExtent([[-50,-50],[mapWidth+50,mapHeight+50]])  // to lock to edges
+                   .scaleExtent([1, 2.5])
+                   .translateExtent([[-50, -50],[mapWidth + 50, mapHeight + 50]])  // to lock to edges
                    .on("zoom", mapZoom);
 
       map.call(zoom);
