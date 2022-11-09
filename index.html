@@ -223,6 +223,19 @@
           })
           .attr("d", arc);
 
+        // --- PIE CHART DICTIONARY ---
+        var data = [
+          {"label": "Freedom to make life choices", "value": freedom},
+          {"label": "GDP per capita", "value": gdp},
+          {"label": "Generosity", "value": generosity},
+          {"label": "Healthy life expectancy", "value": life_expectancy},
+          {"label": "Perceptions of corruption", "value": corruption},
+          {"label": "Social support", "value": social_support}
+        ];
+
+        // --- PIE CHART LABELS ---
+
+
       });
 
       mycountries.on("mouseover", function() {
