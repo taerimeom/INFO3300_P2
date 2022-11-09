@@ -21,8 +21,6 @@
 
       ////////////////////////// Data Cleaning /////////////////////////////////
       // List of names that need to be manually matched between datasets
-      // TODO: Katherine
-
 
       happinessreport[18]["Country or region"] = "United States of America" // "United States"
       happinessreport[19]["Country or region"] = "Czechia" // "Czech Republic"
@@ -46,8 +44,6 @@
       worldmap.objects.countries.geometries.forEach( (d, i) => {
         worldmap_names.push(d.properties.name);
       });
-
-      console.log(worldmap_names);
 
       // Happinessreport country names list
       happiness_names = [];
@@ -74,7 +70,7 @@
       let viewport = map.append("g"); // g tag for map elements
 
       // Draw countries and their mesh lines
-      viewport.selectAll(".countries").data(countries.features)
+      let mycountries = viewport.selectAll(".countries").data(countries.features)
               .enter()
               .append("path")
               .attr("class","countries")
@@ -118,7 +114,13 @@
 
       console.log(happinessreport);
 
-    }
+      // Mouseover Functions
+      mycountries.on("mouseover", function() {
+        let name = d3.select(this).datum().properties.name
+        console.log(name);
+      });
+
+    } // end of async function
 
     drawMap();
 
