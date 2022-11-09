@@ -10,6 +10,7 @@
   <h1> Visualization 1 </h1>
 
   <svg id= "map" height="700" width="800" />
+  <svg id= "countryChart" height="500" width="500" />
 
   <script>
 
@@ -114,10 +115,31 @@
 
       console.log(happinessreport);
 
+      // ---- Country Chart Set Up ----
+      const svg_country = d3.select("svg#countryChart");
+      const width = svg_country.attr("width");
+      const height = svg_country.attr("height");
+      const margin = {top: 10, right: 10, bottom: 10, left: 10};
+      const chartWidth = width - margin.left - margin.right;
+      const chartHeight = height - margin.top - margin.bottom;
+
+      let annotations = svg_country.append("g").attr("id","annotations");
+      let chartArea = svg_country.append("g").attr("id","points")
+                      .attr("transform",`translate(${margin.left},${margin.top})`);
+
+      let name = chartArea.append("text")
+          .style("opacity", "0")
+
       // Mouseover Functions
       mycountries.on("mouseover", function() {
-        let name = d3.select(this).datum().properties.name
-        console.log(name);
+        name.text(d3.select(this).datum().properties.name)
+          .style("opacity", "1")
+
+      });
+
+      mycountries.on("mouseout", function() {
+        name.style("opacity", "0")
+
       });
 
     } // end of async function
