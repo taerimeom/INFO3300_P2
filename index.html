@@ -70,6 +70,7 @@
       // Color scale(s)
       const happinessExtent = d3.extent(happinessreport, d => d["Score"]);
       const happiness_color_scale = d3.scaleSequential(d3.interpolateGnBu).domain(happinessExtent);
+      const happinessScale = d3.scaleLinear().domain(happinessExtent).range([10, 100]); //scale for radius of pie chart
 
       let viewport = map.append("g"); // g tag for map elements
 
@@ -157,34 +158,42 @@
           .attr("width", chartWidth)
           .attr("height", chartHeight)
           .attr("fill", "lightgrey")
+          .attr("rx", 20)
+          .attr("ry", 20)
 
-      let name = chartArea.append("text")
-          .style("opacity", "0")
-          .attr("x", width/2)
-          .attr("y", 30)
-          .attr("text-anchor", "middle")
-          .style("font-size", 30)
+
 
       // PIE CHART
       //var data = [10, 5, 4, 6];
-      //var data = [10, 10, 10, 10];
-      var radius = 100;
+      //var data = [0, 0, 0, 0];
       var color = d3.scaleOrdinal(["red", "orange", "yellow", "green", "blue", "purple"]);
       var pie = d3.pie();
-      var arc = d3.arc()
-                .innerRadius(10)
-                .outerRadius(radius);
 
       // ON CLICK Function
       mycountries.on("click", function() {
-        // country name appears
-        name.text(d3.select(this).datum().properties.name)
-          .style("opacity", "1")
+
+        // redraw the background...
+        let background = chartArea.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", chartWidth)
+            .attr("height", chartHeight)
+            .attr("fill", "lightgrey")
+            .attr("rx", 20)
+            .attr("ry", 20)
+
+        // country name drawn
+        let name = chartArea.append("text")
+            .attr("x", width/2)
+            .attr("y", 50)
+            .attr("text-anchor", "middle")
+            .style("font-size", 30)
+            .style("opacity", "1")
+            .text(d3.select(this).datum().properties.name)
 
         // --- Pie Chart appears ---
         this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
         let rank = this_country[0]["Overall rank"];
-        console.log(rank);
         let freedom = this_country[0]["Freedom to make life choices"];
         let gdp = this_country[0]["GDP per capita"];
         let generosity = this_country[0]["Generosity"];
@@ -193,6 +202,13 @@
         let social_support = this_country[0]["Social support"];
         let score = this_country[0]["Score"];
         var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
+
+        //var radius = 100;
+        var radius = happinessScale(score);
+
+        var arc = d3.arc()
+                  .innerRadius(0) // increase for donut chart
+                  .outerRadius(radius);
 
         var arcs = chartArea.selectAll("arc")
                   .data(pie(data))
