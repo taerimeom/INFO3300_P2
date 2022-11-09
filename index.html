@@ -69,7 +69,9 @@
 
       // Color scale(s)
       const happinessExtent = d3.extent(happinessreport, d => d["Score"]);
-      const happiness_color_scale = d3.scaleSequential(d3.interpolateGnBu).domain(happinessExtent);
+      const minScore = d3.min(happinessreport, d => d["Score"]);
+      const maxScore = d3.max(happinessreport, d => d["Score"]);
+      const happiness_color_scale = d3.scaleSequential().interpolator(d3.interpolateYlGnBu).domain([maxScore, minScore]);
 
       let viewport = map.append("g"); // g tag for map elements
 
