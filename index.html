@@ -20,11 +20,34 @@
       const happinessreport = await d3.csv("2019.csv");
 
       ////////////////////////// Data Cleaning /////////////////////////////////
+      // List of names that need to be manually matched between datasets
+      // TODO: Katherine
+
+
+      happinessreport[18]["Country or region"] = "United States of America" // "United States"
+      happinessreport[19]["Country or region"] = "Czechia" // "Czech Republic"
+      happinessreport[38]["Country or region"] = "Trinidad and Tobago" // "Trinidad & Tobago"
+      happinessreport[76]["Country or region"] = "Dominican Rep." // "Dominican Republic"
+      happinessreport[77]["Country or region"] = "Bosnia and Herz." // "Bosnia and Herzegovina"
+      happinessreport[102]["Country or region"] = "Congo" // "Congo (Brazzaville)"
+      happinessreport[109]["Country or region"] = "Palestine" // "Palestinian Territories"
+      happinessreport[126]["Country or region"] = "Dem. Rep. Congo" // "Congo (Kinshasha)"
+      happinessreport[134]["Country or region"] = "eSwatini" // "Swaziland"
+      happinessreport[154]["Country or region"] = "Central African Rep." // "Central African Republic"
+      happinessreport[155]["Country or region"] = "S. Sudan" // "South Sudan"
+
+      // Places to drop from happiness report
+      //happinessreport[63]["Country or region"] = "-" // "Northern Cyprus" --> Cyprus
+      //happinessreport[83]["Country or region"] = "-" // "North Macedonia" --> Macedonia?
+      //happinessreport[98]["Country or region"] = "-" // "Ivory Coast" --> drop?
+
       // Worldmap country names list
       worldmap_names = [];
       worldmap.objects.countries.geometries.forEach( (d, i) => {
         worldmap_names.push(d.properties.name);
       });
+
+      console.log(worldmap_names);
 
       // Happinessreport country names list
       happiness_names = [];
@@ -32,10 +55,9 @@
         happiness_names.push(d["Country or region"]);
       });
 
-      // List of names that need to be manually matched between datasets
-      // TODO: Katherine
       const names_to_fix = happiness_names.filter(element => !worldmap_names.includes(element));
       console.log(names_to_fix);
+
       //////////////////////////////////////////////////////////////////////////
 
       // Initialize constants for map generation
