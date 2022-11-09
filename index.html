@@ -127,14 +127,25 @@
       let chartArea = svg_country.append("g").attr("id","points")
                       .attr("transform",`translate(${margin.left},${margin.top})`);
 
+      let background = chartArea.append("rect")
+          .attr("x", 0)
+          .attr("y", 0)
+          .attr("width", chartWidth)
+          .attr("height", chartHeight)
+          .attr("fill", "lightgrey")
+
       let name = chartArea.append("text")
           .style("opacity", "0")
+          .attr("x", width/2)
+          .attr("y", 30)
+          .attr("text-anchor", "middle")
+          .style("font-size", 30)
 
       // PIE CHART
       //var data = [10, 5, 4, 6];
       //var data = [10, 10, 10, 10];
-      var radius = 50;
-      var color = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3']);
+      var radius = 100;
+      var color = d3.scaleOrdinal(["red", "orange", "yellow", "green", "blue", "purple"]);
       var pie = d3.pie();
       var arc = d3.arc()
                 .innerRadius(10)
@@ -162,7 +173,7 @@
                   .enter()
                   .append("g")
                   .attr("class", "arc")
-                  .attr("transform",`translate(${radius},${radius})`);
+                  .attr("transform",`translate(${width/2},${height/2})`);
 
           arcs.append("path")
             .attr("fill", function(d, i) {
