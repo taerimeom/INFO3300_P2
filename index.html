@@ -10,6 +10,7 @@
   <h1> Visualization 1 </h1>
 
   <svg id= "map" height="700" width="800" />
+  <svg id= "countryChart" height="500" width="500" />
 
   <script>
 
@@ -20,6 +21,25 @@
       const happinessreport = await d3.csv("2019.csv");
 
       ////////////////////////// Data Cleaning /////////////////////////////////
+      // List of names that need to be manually matched between datasets
+
+      happinessreport[18]["Country or region"] = "United States of America" // "United States"
+      happinessreport[19]["Country or region"] = "Czechia" // "Czech Republic"
+      happinessreport[38]["Country or region"] = "Trinidad and Tobago" // "Trinidad & Tobago"
+      happinessreport[76]["Country or region"] = "Dominican Rep." // "Dominican Republic"
+      happinessreport[77]["Country or region"] = "Bosnia and Herz." // "Bosnia and Herzegovina"
+      happinessreport[102]["Country or region"] = "Congo" // "Congo (Brazzaville)"
+      happinessreport[109]["Country or region"] = "Palestine" // "Palestinian Territories"
+      happinessreport[126]["Country or region"] = "Dem. Rep. Congo" // "Congo (Kinshasha)"
+      happinessreport[134]["Country or region"] = "eSwatini" // "Swaziland"
+      happinessreport[154]["Country or region"] = "Central African Rep." // "Central African Republic"
+      happinessreport[155]["Country or region"] = "S. Sudan" // "South Sudan"
+
+      // Places to drop from happiness report
+      //happinessreport[63]["Country or region"] = "-" // "Northern Cyprus" --> Cyprus
+      //happinessreport[83]["Country or region"] = "-" // "North Macedonia" --> Macedonia?
+      //happinessreport[98]["Country or region"] = "-" // "Ivory Coast" --> drop?
+
       // Worldmap country names list
       let worldmap_names = [];
       worldmap.objects.countries.geometries.forEach( (d, i) => {
@@ -32,8 +52,6 @@
         happiness_names.push(d["Country or region"]);
       });
 
-      // List of names that need to be manually matched between datasets
-      // TODO: Katherine
       const names_to_fix = happiness_names.filter(element => !worldmap_names.includes(element));
       //console.log(names_to_fix);
       //////////////////////////////////////////////////////////////////////////
@@ -56,7 +74,7 @@
       let viewport = map.append("g"); // g tag for map elements
 
       // Draw countries and their mesh lines
-      viewport.selectAll(".countries").data(countries.features)
+      let mycountries = viewport.selectAll(".countries").data(countries.features)
               .enter()
               .append("path")
               .attr("class","countries")
@@ -119,8 +137,36 @@
             return happiness_color_scale(score);
           }
       }
+      //////////////////////////////////////////////////////////////////////////
 
-    } // async
+      // ---- Country Chart Set Up ----
+      const svg_country = d3.select("svg#countryChart");
+      const width = svg_country.attr("width");
+      const height = svg_country.attr("height");
+      const margin = {top: 10, right: 10, bottom: 10, left: 10};
+      const chartWidth = width - margin.left - margin.right;
+      const chartHeight = height - margin.top - margin.bottom;
+
+      let annotations = svg_country.append("g").attr("id","annotations");
+      let chartArea = svg_country.append("g").attr("id","points")
+                      .attr("transform",`translate(${margin.left},${margin.top})`);
+
+      let name = chartArea.append("text")
+          .style("opacity", "0")
+
+      // Mouseover Functions
+      mycountries.on("mouseover", function() {
+        name.text(d3.select(this).datum().properties.name)
+          .style("opacity", "1")
+
+      });
+
+      mycountries.on("mouseout", function() {
+        name.style("opacity", "0")
+
+      });
+
+    } // end of async function
 
     drawMap();
 
