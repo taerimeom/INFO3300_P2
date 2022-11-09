@@ -175,11 +175,13 @@
                 .innerRadius(10)
                 .outerRadius(radius);
 
-      // Mouseover Functions
-      mycountries.on("mouseover", function() {
+      // ON CLICK Function
+      mycountries.on("click", function() {
+        // country name appears
         name.text(d3.select(this).datum().properties.name)
           .style("opacity", "1")
 
+        // --- Pie Chart appears ---
         this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
         let rank = this_country[0]["Overall rank"];
         console.log(rank);
@@ -199,18 +201,21 @@
                   .attr("class", "arc")
                   .attr("transform",`translate(${width/2},${height/2})`);
 
-          arcs.append("path")
-            .attr("fill", function(d, i) {
-                return color(i);
-            })
-            .attr("d", arc);
+        arcs.append("path")
+          .attr("fill", function(d, i) {
+              return color(i);
+          })
+          .attr("d", arc);
 
       });
 
-      mycountries.on("mouseout", function() {
-        name.style("opacity", "0")
+      mycountries.on("mouseover", function() {
+        //TODO: alter opacity or stroke or size of country upon mousover
+      });
 
-        arcs.path.attr("fill", "lightgrey");
+      mycountries.on("mouseout", function() {
+        //TODO: return to natural state after mouseover
+
       });
 
     } // end of async function
