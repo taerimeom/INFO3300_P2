@@ -130,10 +130,45 @@
       let name = chartArea.append("text")
           .style("opacity", "0")
 
+      // PIE CHART
+      var data = [10, 5, 4, 6];
+      //var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
+      var radius = 50;
+      var color = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3']);
+      var pie = d3.pie();
+      var arc = d3.arc()
+                .innerRadius(10)
+                .outerRadius(radius);
+      var arcs = chartArea.selectAll("arc")
+                .data(pie(data))
+                .enter()
+                .append("g")
+                .attr("class", "arc")
+                .attr("transform",`translate(${radius},${radius})`);
+
+        arcs.append("path")
+          .attr("fill", function(d, i) {
+              return color(i);
+          })
+          .attr("d", arc);
+
       // Mouseover Functions
       mycountries.on("mouseover", function() {
         name.text(d3.select(this).datum().properties.name)
           .style("opacity", "1")
+
+        happinessreport.forEach( (d, i) => {
+          if(d["Country or region"] == d3.select(this).datum().properties.name){
+            let rank = d["Overall rank"];
+            let freedom = d["Freedom to make life choices"];
+            let gdp = d["GDP per capita"];
+            let generosity = d["Generosity"];
+            let life_expectancy = d["Healthy life expectancy"];
+            let corruption = d["Perceptions of corruption"];
+            let social_support = d["Social support"];
+            let score = d["Score"];
+          }
+        });
 
       });
 
