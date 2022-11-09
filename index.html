@@ -166,7 +166,7 @@
       // PIE CHART
       //var data = [10, 5, 4, 6];
       //var data = [0, 0, 0, 0];
-      var color = d3.scaleOrdinal(["red", "orange", "yellow", "green", "blue", "purple"]);
+      var pie_color = d3.scaleOrdinal(["red", "orange", "yellow", "green", "blue", "purple"]);
       var pie = d3.pie();
 
       // ON CLICK Function
@@ -219,13 +219,13 @@
 
         arcs.append("path")
           .attr("fill", function(d, i) {
-              return color(i);
+              return pie_color(i);
           })
           .attr("d", arc);
 
         // --- PIE CHART DICTIONARY ---
-        var data = [
-          {"label": "Freedom to make life choices", "value": freedom},
+        var data_dict = [
+          {"label": "Freedom of life choices", "value": freedom},
           {"label": "GDP per capita", "value": gdp},
           {"label": "Generosity", "value": generosity},
           {"label": "Healthy life expectancy", "value": life_expectancy},
@@ -233,7 +233,19 @@
           {"label": "Social support", "value": social_support}
         ];
 
-        // --- PIE CHART LABELS ---
+        // --- PIE CHART LEGEND ---
+        data_dict.forEach( (d, i) => {
+          chartArea.append("text")
+            .attr("x", 20)
+            .attr("y", 30 + 20*i)
+            .text(d["label"]);
+
+          chartArea.append("circle")
+            .attr("cx", 15)
+            .attr("cy", 30 + 20*i)
+            .attr("r", 5)
+            .attr("fill", pie_color(i))
+        });
 
 
       });
