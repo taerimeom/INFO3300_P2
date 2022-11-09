@@ -236,13 +236,18 @@
         // --- PIE CHART LEGEND ---
         data_dict.forEach( (d, i) => {
           chartArea.append("text")
-            .attr("x", 20)
-            .attr("y", 30 + 20*i)
-            .text(d["label"]);
+            .attr("x", chartWidth/2)
+            .attr("y", chartHeight - (25 + 20*i))
+            .text(d["rank"]);
+
+          chartArea.append("text")
+            .attr("x", 25)
+            .attr("y", chartHeight - (25 + 20*i))
+            .text(d["label"] + ": " + d["value"]);
 
           chartArea.append("circle")
             .attr("cx", 15)
-            .attr("cy", 30 + 20*i)
+            .attr("cy", chartHeight - (30 + 20*i))
             .attr("r", 5)
             .attr("fill", pie_color(i))
         });
