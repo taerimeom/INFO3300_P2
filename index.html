@@ -9,7 +9,7 @@
 <body><p id="p1">
   <h1> Visualization 1 </h1>
 
-  <svg id= "map" height="700" width="800" />
+  <svg id= "map" height="700" width="800" style="border:1px solid black"/>
   <svg id= "countryChart" height="500" width="500" />
 
   <script>
@@ -169,7 +169,7 @@
       // PIE CHART
       //var data = [10, 5, 4, 6];
       //var data = [0, 0, 0, 0];
-      var pie_color = d3.scaleOrdinal(["red", "orange", "yellow", "green", "blue", "purple"]);
+      var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
       var pie = d3.pie();
 
       // ON CLICK Function
@@ -218,7 +218,7 @@
                   .enter()
                   .append("g")
                   .attr("class", "arc")
-                  .attr("transform",`translate(${width/2},${height/2})`);
+                  .attr("transform",`translate(${width/2},${2*height/5})`);
 
         arcs.append("path")
           .attr("fill", function(d, i) {
@@ -240,26 +240,68 @@
         data_dict.forEach( (d, i) => {
           chartArea.append("text")
             .attr("x", chartWidth/2)
-            .attr("y", chartHeight - (25 + 20*i))
+            .attr("y", chartHeight - (40 + 20*i))
             .text(d["rank"]);
 
           chartArea.append("text")
-            .attr("x", 25)
-            .attr("y", chartHeight - (25 + 20*i))
-            .text(d["label"] + ": " + d["value"]);
+            .attr("x", 50)
+            .attr("y", chartHeight - (40 + 20*i))
+            .text(d["label"] + ": ");
+
+          chartArea.append("text")
+            .attr("x", chartWidth - 50)
+            .attr("y", chartHeight - (40 + 20*i))
+            .attr("text-anchor", "end")
+            .text(d["value"]);
 
           chartArea.append("circle")
-            .attr("cx", 15)
-            .attr("cy", chartHeight - (30 + 20*i))
+            .attr("cx", 40)
+            .attr("cy", chartHeight - (45 + 20*i))
             .attr("r", 5)
             .attr("fill", pie_color(i))
         });
 
+        chartArea.append("line")
+          .attr("x1", 35)
+          .attr("x2", chartWidth - 50)
+          .attr("y1", chartHeight - 30)
+          .attr("y2", chartHeight - 30)
+          .attr("stroke-width", 1)
+          .attr("stroke", "black")
 
-      });
+        chartArea.append("text")
+          .attr("x", 50)
+          .attr("y", chartHeight - 10)
+          .text("Total Happiness Score: ");
+
+        chartArea.append("text")
+          .attr("x", chartWidth - 50)
+          .attr("y", chartHeight - 10)
+          .attr("text-anchor", "end")
+          .text(score);
+
+        // Country Rank
+        chartArea.append("text")
+            .attr("x", width/2)
+            .attr("y", 80)
+            .attr("text-anchor", "middle")
+            .style("font-size", 20)
+            .style("opacity", "1")
+            .text("#" + rank + " Happiest Nation")
+
+        // Map Visual Feedback
+        mycountries.attr("opacity", 0.6 );
+        d3.select(this).attr("opacity", 1 );
+
+
+      }); // END OF ON CLICK
+
 
       mycountries.on("mouseover", function() {
         //TODO: alter opacity or stroke or size of country upon mousover
+        //mycountries.attr("opacity", 0.6 );
+        //d3.select(this).attr("opacity", 1 );
+
       });
 
       mycountries.on("mouseout", function() {
