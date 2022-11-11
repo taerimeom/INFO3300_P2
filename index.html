@@ -195,6 +195,7 @@
             .text(d3.select(this).datum().properties.name)
 
         // --- Pie Chart appears ---
+        try {
         this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
         let rank = this_country[0]["Overall rank"];
         let freedom = this_country[0]["Freedom to make life choices"];
@@ -288,11 +289,37 @@
             .style("font-size", 20)
             .style("opacity", "1")
             .text("#" + rank + " Happiest Nation")
+        }
+
+        catch (TypeError) {
+          console.log("display nothing")
+        }
 
         // Map Visual Feedback
-        mycountries.attr("opacity", 0.6 );
-        d3.select(this).attr("opacity", 1 );
+        //mycountries.attr("opacity", 0.6);
+        //d3.select(this).attr("opacity", 1);
 
+        // If map opacity is 1 and a country is clicked, set rest of opacities to 0.6
+        if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
+             parseFloat(d3.select(".countries").style("opacity")) === 1 ) {
+          mycountries.attr("opacity", 0.6);
+          d3.select(this).attr("opacity", 1);
+        }
+        // If map opacity is 0.6 and a country is reclicked, set all opacities to 1
+        else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
+                  parseFloat(d3.select(".countries").style("opacity")) === 0.6 ) {
+          mycountries.attr("opacity", 1);
+        }
+        // If a country with opacity 0.6 is clicked, set that as target
+        else if (parseFloat(d3.select(this).style("opacity")) === 0.6) {
+          mycountries.attr("opacity", 0.6);
+          d3.select(this).attr("opacity", 1);
+        }
+        // If country selected is a country with no data, set all opacities to 1
+        else if (d3.select(this).style("fill") === "rgb(211, 211, 211)") {
+          mycountries.attr("opacity", 1);
+          console.log("invalid selection")
+        }
 
       }); // END OF ON CLICK
 
