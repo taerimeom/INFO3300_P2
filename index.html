@@ -10,6 +10,7 @@
   <h1> Visualization 1 </h1>
 
   <svg id= "map" height="700" width="800" />
+  <svg id="maplegend" width="600" height="40"/>
   <svg id= "countryChart" height="500" width="500" />
 
   <script>
@@ -141,6 +142,33 @@
             return happiness_color_scale(score);
           }
       }
+      // -- Map color scale legend --
+
+        var data = Array.from(Array(100).keys());
+
+        var mapScale = d3.scaleSequential(d3.interpolateYlGnBu)
+            .domain([99,0]); //flipped domain to make it blue to yellow
+
+        var xScale = d3.scaleLinear()
+            .domain([0,99])
+            .range([0, 600]);
+
+        var u = d3.select("#maplegend")
+            .selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", (d) => Math.ceil(xScale(d)))
+            .attr("y", 0)
+            .attr("height", 40)
+            .attr("width", (d) => {
+                if (d == 99) {
+                    return 6;
+                }
+                return Math.ceil(xScale(d+1)) - Math.ceil(xScale(d)) + 1;
+             })
+            .attr("fill", (d) => mapScale(d));
+
       //////////////////////////////////////////////////////////////////////////
 
       // ---- Country Chart Set Up ----
