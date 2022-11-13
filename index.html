@@ -9,9 +9,9 @@
 <body><p id="p1">
   <h1> Visualization 1 </h1>
 
-  <svg id= "map" height="700" width="800" />
-  <svg id="maplegend" width="600" height="40"/>
-  <svg id= "countryChart" height="500" width="500" />
+  <svg id= "map" height="700" width="800" ></svg>
+  <svg id="maplegend" width="600" height="40"></svg>
+  <svg id= "countryChart" height="500" width="500" ></svg>
 
   <script>
 
@@ -218,6 +218,7 @@
             .attr("x", width/2)
             .attr("y", 50)
             .attr("text-anchor", "middle")
+            .attr("font-family", "Verdana, sans-serif")
             .style("font-size", 30)
             .style("opacity", "1")
             .text(d3.select(this).datum().properties.name)
@@ -270,17 +271,20 @@
           chartArea.append("text")
             .attr("x", chartWidth/2)
             .attr("y", chartHeight - (40 + 20*i))
+            .attr("font-family", "Verdana, sans-serif")
             .text(d["rank"]);
 
           chartArea.append("text")
             .attr("x", 50)
             .attr("y", chartHeight - (40 + 20*i))
+            .attr("font-family", "Verdana, sans-serif")
             .text(d["label"] + ": ");
 
           chartArea.append("text")
             .attr("x", chartWidth - 50)
             .attr("y", chartHeight - (40 + 20*i))
             .attr("text-anchor", "end")
+            .attr("font-family", "Verdana, sans-serif")
             .text(d["value"]);
 
           chartArea.append("circle")
@@ -301,12 +305,14 @@
         chartArea.append("text")
           .attr("x", 50)
           .attr("y", chartHeight - 10)
+          .attr("font-family", "Verdana, sans-serif")
           .text("Total Happiness Score: ");
 
         chartArea.append("text")
           .attr("x", chartWidth - 50)
           .attr("y", chartHeight - 10)
           .attr("text-anchor", "end")
+          .attr("font-family", "Verdana, sans-serif")
           .text(score);
 
         // Country Rank
@@ -314,6 +320,7 @@
             .attr("x", width/2)
             .attr("y", 80)
             .attr("text-anchor", "middle")
+            .attr("font-family", "Verdana, sans-serif")
             .style("font-size", 20)
             .style("opacity", "1")
             .text("#" + rank + " Happiest Nation")
