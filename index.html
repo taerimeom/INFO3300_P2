@@ -1,208 +1,194 @@
-<!DOCTYPE html> <html lang= "en"> <head> <meta charset= "utf-8"/> <meta name=
-"viewport" content= "width=device-width, initial-scale=1" />
+<!DOCTYPE html>
+<html lang= "en">
+  <head>
+    <meta charset= "utf-8"/> <meta name="viewport" content= "width=device-width, initial-scale=1" />
 
-<script src="https://d3js.org/d3.v7.min.js"></script> <!-- d3 import -->
-<script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script> <!-- d3 import -->
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
 
-<title>INFO 3300 Project 2 </title> </head>
+  <title>INFO 3300 Project 2 </title>
+</head>
 
-<body><p id="p1">
+<body>
+  <p id="p1">
 
-  <svg id= "map" height="700" width="600" ></svg>
-  <svg id="maplegend" width="600" height="40"></svg>
-  <svg id= "countryChart" height="500" width="500" ></svg>
+    <h1>INFO 3300 Project 2</h1>
+    <h3>by Fatima Yuen (fy46), Katherine Vella (skv25), Lea Jih-Vieira (laj74), Taerim Eom (te89)</h3>
 
-  <script>
+    <svg id= "map" height="500" width="600" style="border:1px solid black"></svg>
+    <svg id= "countryChart" height="500" width="500" ></svg>
+    <svg id="maplegend" width="600" height="40"></svg>
 
-      const drawMap = async () => {
+    <script>
 
-      // Initialize datasets
-      const worldmap = await d3.json("countries-50m.json");
-      const happinessreport = await d3.csv("2019.csv");
+        const drawMap = async () => {
 
-      ////////////////////////// Data Cleaning /////////////////////////////////
-      // List of names that need to be manually matched between datasets
+        // Initialize datasets
+        const worldmap = await d3.json("countries-50m.json");
+        const happinessreport = await d3.csv("2019.csv");
 
-      happinessreport[18]["Country or region"] = "United States of America" // "United States"
-      happinessreport[19]["Country or region"] = "Czechia" // "Czech Republic"
-      happinessreport[38]["Country or region"] = "Trinidad and Tobago" // "Trinidad & Tobago"
-      happinessreport[76]["Country or region"] = "Dominican Rep." // "Dominican Republic"
-      happinessreport[77]["Country or region"] = "Bosnia and Herz." // "Bosnia and Herzegovina"
-      happinessreport[102]["Country or region"] = "Congo" // "Congo (Brazzaville)"
-      happinessreport[109]["Country or region"] = "Palestine" // "Palestinian Territories"
-      happinessreport[126]["Country or region"] = "Dem. Rep. Congo" // "Congo (Kinshasha)"
-      happinessreport[134]["Country or region"] = "eSwatini" // "Swaziland"
-      happinessreport[154]["Country or region"] = "Central African Rep." // "Central African Republic"
-      happinessreport[155]["Country or region"] = "S. Sudan" // "South Sudan"
+        ////////////////////////// Data Cleaning /////////////////////////////////
+        // List of names that need to be manually matched between datasets
 
-      // Places to drop from happiness report
-      //happinessreport[63]["Country or region"] = "-" // "Northern Cyprus" --> Cyprus
-      //happinessreport[83]["Country or region"] = "-" // "North Macedonia" --> Macedonia?
-      //happinessreport[98]["Country or region"] = "-" // "Ivory Coast" --> drop?
+        happinessreport[18]["Country or region"] = "United States of America" // "United States"
+        happinessreport[19]["Country or region"] = "Czechia" // "Czech Republic"
+        happinessreport[38]["Country or region"] = "Trinidad and Tobago" // "Trinidad & Tobago"
+        happinessreport[76]["Country or region"] = "Dominican Rep." // "Dominican Republic"
+        happinessreport[77]["Country or region"] = "Bosnia and Herz." // "Bosnia and Herzegovina"
+        happinessreport[102]["Country or region"] = "Congo" // "Congo (Brazzaville)"
+        happinessreport[109]["Country or region"] = "Palestine" // "Palestinian Territories"
+        happinessreport[126]["Country or region"] = "Dem. Rep. Congo" // "Congo (Kinshasha)"
+        happinessreport[134]["Country or region"] = "eSwatini" // "Swaziland"
+        happinessreport[154]["Country or region"] = "Central African Rep." // "Central African Republic"
+        happinessreport[155]["Country or region"] = "S. Sudan" // "South Sudan"
 
-      // Worldmap country names list
-      let worldmap_names = [];
-      worldmap.objects.countries.geometries.forEach( (d, i) => {
-        worldmap_names.push(d.properties.name);
-      });
+        // Places to drop from happiness report
+        //happinessreport[63]["Country or region"] = "-" // "Northern Cyprus" --> Cyprus
+        //happinessreport[83]["Country or region"] = "-" // "North Macedonia" --> Macedonia?
+        //happinessreport[98]["Country or region"] = "-" // "Ivory Coast" --> drop?
 
-      // Happinessreport country names list
-      let happiness_names = [];
-      happinessreport.forEach( (d, i) => {
-        happiness_names.push(d["Country or region"]);
-      });
+        // Worldmap country names list
+        let worldmap_names = [];
+        worldmap.objects.countries.geometries.forEach( (d, i) => {
+          worldmap_names.push(d.properties.name);
+        });
 
-      const names_to_fix = happiness_names.filter(element => !worldmap_names.includes(element));
-      //console.log(names_to_fix);
-      //////////////////////////////////////////////////////////////////////////
+        // Happinessreport country names list
+        let happiness_names = [];
+        happinessreport.forEach( (d, i) => {
+          happiness_names.push(d["Country or region"]);
+        });
 
-      // Initialize constants for map generation
-      const countries = topojson.feature(worldmap, worldmap.objects.countries);
-      const countriesMesh = topojson.mesh(worldmap, worldmap.objects.countries);
-      const landMesh = topojson.mesh(worldmap, worldmap.objects.land);
+        const names_to_fix = happiness_names.filter(element => !worldmap_names.includes(element));
+        //console.log(names_to_fix);
+        //////////////////////////////////////////////////////////////////////////
 
-      let map = d3.select("svg#map");
-      let mapWidth = map.attr("width");
-      let mapHeight = map.attr("height");
-      let projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
-      let path = d3.geoPath().projection(projection);
+        // Initialize constants for map generation
+        const countries = topojson.feature(worldmap, worldmap.objects.countries);
+        const countriesMesh = topojson.mesh(worldmap, worldmap.objects.countries);
+        const landMesh = topojson.mesh(worldmap, worldmap.objects.land);
 
-      // Color scale(s)
-      const happinessExtent = d3.extent(happinessreport, d => d["Score"]);
-      const minScore = d3.min(happinessreport, d => d["Score"]);
-      const maxScore = d3.max(happinessreport, d => d["Score"]);
+        let map = d3.select("svg#map");
+        let mapWidth = map.attr("width");
+        let mapHeight = map.attr("height");
+        let projection = d3.geoMercator().fitSize([mapWidth, mapHeight], countries);
+        let path = d3.geoPath().projection(projection);
 
-      const happiness_color_scale = d3.scaleSequential(d3.interpolateYlGnBu).domain([maxScore,minScore]);
-      const happinessScale = d3.scaleLinear().domain(happinessExtent).range([10, 100]); //scale for radius of pie chart
+        // Color scale(s)
+        const happinessExtent = d3.extent(happinessreport, d => d["Score"]);
+        const minScore = d3.min(happinessreport, d => d["Score"]);
+        const maxScore = d3.max(happinessreport, d => d["Score"]);
 
-      let viewport = map.append("g"); // g tag for map elements
+        const happiness_color_scale = d3.scaleSequential(d3.interpolateYlGnBu).domain([maxScore,minScore]);
+        const happinessScale = d3.scaleLinear().domain(happinessExtent).range([10, 100]); //scale for radius of pie chart
 
-      // Draw countries and their mesh lines
-      let mycountries = viewport.selectAll(".countries").data(countries.features)
-              .enter()
-              .append("path")
-              .attr("class","countries")
-              .attr("d", path)
-              .attr("fill", d => get_fills(d) );
+        let viewport = map.append("g"); // g tag for map elements
 
-      country_lines = viewport.append("path").datum(countriesMesh)
-                              .attr("class","country-outline")
-                              .attr("d", path)
-                              .attr("fill" ,"none")
-                              .attr("stroke", "black")
-                              .attr("stroke-width", 0.5);
+        // Draw countries and their mesh lines
+        let mycountries = viewport.selectAll(".countries").data(countries.features)
+                .enter()
+                .append("path")
+                .attr("class","countries")
+                .attr("d", path)
+                .attr("fill", d => get_fills(d) );
 
-      // Draw land mesh lines
-      land_lines = viewport.append("path").datum(landMesh)
-                           .attr("class","land-outline")
-                           .attr("d", path)
-                           .attr("fill" ,"none")
-                           .attr("stroke", "black")
-                           .attr("stroke-width", 0.75);
+        country_lines = viewport.append("path").datum(countriesMesh)
+                                .attr("class","country-outline")
+                                .attr("d", path)
+                                .attr("fill" ,"none")
+                                .attr("stroke", "black")
+                                .attr("stroke-width", 0.5);
 
-      // Zoom Generator
-      var zoom = d3.zoom()
-                   .scaleExtent([1, 2.5])
-                   .translateExtent([[-50, -50],[mapWidth + 50, mapHeight + 50]])  // to lock to edges
-                   .on("zoom", mapZoom);
+        // Draw land mesh lines
+        land_lines = viewport.append("path").datum(landMesh)
+                             .attr("class","land-outline")
+                             .attr("d", path)
+                             .attr("fill" ,"none")
+                             .attr("stroke", "black")
+                             .attr("stroke-width", 0.75);
 
-      map.call(zoom);
-      map.call(zoom.transform, d3.zoomIdentity);
+        // Zoom Generator
+        var zoom = d3.zoom()
+                     .scaleExtent([1, 2.5])
+                     .translateExtent([[-50, -50],[mapWidth + 50, mapHeight + 50]])  // to lock to edges
+                     .on("zoom", mapZoom);
 
-      ////////////////////////////// Functions /////////////////////////////////
-      function mapZoom({transform}) {
-        // Transform the group object to reflect the zoom action
-        viewport.attr("transform", transform.toString());
+        map.call(zoom);
+        map.call(zoom.transform, d3.zoomIdentity);
 
-        // Modify the stroke-width of the mesh so the width remains the same regardless of the zoom level
-        viewport.select(".county-outline")
-                .style("stroke-width", 0.5 / transform.k);
-        viewport.select(".state-outline")
-                .style("stroke-width", 0.75 / transform.k);
+        ////////////////////////////// Functions /////////////////////////////////
+        function mapZoom({transform}) {
+          // Transform the group object to reflect the zoom action
+          viewport.attr("transform", transform.toString());
+
+          // Modify the stroke-width of the mesh so the width remains the same regardless of the zoom level
+          viewport.select(".county-outline")
+                  .style("stroke-width", 0.5 / transform.k);
+          viewport.select(".state-outline")
+                  .style("stroke-width", 0.75 / transform.k);
+          }
+
+        function get_fills(country_feature) {
+            // Map the worldmap country with the happiness country and get the
+            // relevant data. If there is a match, color according to the color
+            // scale of the feature. If there is not a match, color light gray
+
+            country_info = happinessreport.filter(function(k) {return k["Country or region"] === country_feature.properties.name})[0];
+
+            try {
+              score = parseFloat(country_info["Score"]);
+            } catch (TypeError) {
+              score = 0;
+              // console.log("caught");
+            }
+
+            if (score === 0) {
+              return "lightgray";
+            } else {
+              return happiness_color_scale(score);
+            }
         }
+        // -- Map color scale legend --
 
-      function get_fills(country_feature) {
-          // Map the worldmap country with the happiness country and get the
-          // relevant data. If there is a match, color according to the color
-          // scale of the feature. If there is not a match, color light gray
+          var data = Array.from(Array(100).keys());
 
-          country_info = happinessreport.filter(function(k) {return k["Country or region"] === country_feature.properties.name})[0];
+          var mapScale = d3.scaleSequential(d3.interpolateYlGnBu)
+              .domain([99,0]); //flipped domain to make it blue to yellow
 
-          try {
-            score = parseFloat(country_info["Score"]);
-          } catch (TypeError) {
-            score = 0;
-            // console.log("caught");
-          }
+          var xScale = d3.scaleLinear()
+              .domain([0,99])
+              .range([0, 600]);
 
-          if (score === 0) {
-            return "lightgray";
-          } else {
-            return happiness_color_scale(score);
-          }
-      }
-      // -- Map color scale legend --
+          var u = d3.select("#maplegend")
+              .selectAll("rect")
+              .data(data)
+              .enter()
+              .append("rect")
+              .attr("x", (d) => Math.ceil(xScale(d)))
+              .attr("y", 0)
+              .attr("height", 40)
+              .attr("width", (d) => {
+                  if (d == 99) {
+                      return 6;
+                  }
+                  return Math.ceil(xScale(d+1)) - Math.ceil(xScale(d)) + 1;
+               })
+              .attr("fill", (d) => mapScale(d));
 
-        var data = Array.from(Array(100).keys());
+        //////////////////////////////////////////////////////////////////////////
 
-        var mapScale = d3.scaleSequential(d3.interpolateYlGnBu)
-            .domain([99,0]); //flipped domain to make it blue to yellow
+        // ---- Country Chart Set Up ----
+        const svg_country = d3.select("svg#countryChart");
+        const width = svg_country.attr("width");
+        const height = svg_country.attr("height");
+        const margin = {top: 10, right: 10, bottom: 10, left: 10};
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
 
-        var xScale = d3.scaleLinear()
-            .domain([0,99])
-            .range([0, 600]);
+        let annotations = svg_country.append("g").attr("id","annotations");
+        let chartArea = svg_country.append("g").attr("id","points")
+                        .attr("transform",`translate(${margin.left},${margin.top})`);
 
-        var u = d3.select("#maplegend")
-            .selectAll("rect")
-            .data(data)
-            .enter()
-            .append("rect")
-            .attr("x", (d) => Math.ceil(xScale(d)))
-            .attr("y", 0)
-            .attr("height", 40)
-            .attr("width", (d) => {
-                if (d == 99) {
-                    return 6;
-                }
-                return Math.ceil(xScale(d+1)) - Math.ceil(xScale(d)) + 1;
-             })
-            .attr("fill", (d) => mapScale(d));
-
-      //////////////////////////////////////////////////////////////////////////
-
-      // ---- Country Chart Set Up ----
-      const svg_country = d3.select("svg#countryChart");
-      const width = svg_country.attr("width");
-      const height = svg_country.attr("height");
-      const margin = {top: 10, right: 10, bottom: 10, left: 10};
-      const chartWidth = width - margin.left - margin.right;
-      const chartHeight = height - margin.top - margin.bottom;
-
-      let annotations = svg_country.append("g").attr("id","annotations");
-      let chartArea = svg_country.append("g").attr("id","points")
-                      .attr("transform",`translate(${margin.left},${margin.top})`);
-
-      let background = chartArea.append("rect")
-          .attr("x", 0)
-          .attr("y", 0)
-          .attr("width", chartWidth)
-          .attr("height", chartHeight)
-          .attr("fill", "lightgrey")
-          .attr("rx", 20)
-          .attr("ry", 20)
-
-
-
-      // PIE CHART
-      //var data = [10, 5, 4, 6];
-      //var data = [0, 0, 0, 0];
-      var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
-      var pie = d3.pie();
-
-      // ON CLICK Function
-      mycountries.on("click", function() {
-
-        // redraw the background...
         let background = chartArea.append("rect")
             .attr("x", 0)
             .attr("y", 0)
@@ -212,163 +198,187 @@
             .attr("rx", 20)
             .attr("ry", 20)
 
-        // country name drawn
-        let name = chartArea.append("text")
-            .attr("x", width/2)
-            .attr("y", 50)
-            .attr("text-anchor", "middle")
-            .attr("font-family", "Verdana, sans-serif")
-            .style("font-size", 30)
-            .style("opacity", "1")
-            .text(d3.select(this).datum().properties.name)
 
-        // --- Pie Chart appears ---
-        try {
-        this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
-        let rank = this_country[0]["Overall rank"];
-        let freedom = this_country[0]["Freedom to make life choices"];
-        let gdp = this_country[0]["GDP per capita"];
-        let generosity = this_country[0]["Generosity"];
-        let life_expectancy = this_country[0]["Healthy life expectancy"];
-        let corruption = this_country[0]["Perceptions of corruption"];
-        let social_support = this_country[0]["Social support"];
-        let score = this_country[0]["Score"];
-        var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
 
-        var radius = 100;
+        // PIE CHART
+        //var data = [10, 5, 4, 6];
+        //var data = [0, 0, 0, 0];
+        var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
+        var pie = d3.pie();
 
-        var arc = d3.arc()
-                  .innerRadius(0) // increase for donut chart
-                  .outerRadius(radius);
+        // ON CLICK Function
+        mycountries.on("click", function() {
 
-        var arcs = chartArea.selectAll("arc")
-                  .data(pie(data))
-                  .enter()
-                  .append("g")
-                  .attr("class", "arc")
-                  .attr("transform",`translate(${width/2},${2*height/5})`);
+          // redraw the background...
+          let background = chartArea.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("width", chartWidth)
+              .attr("height", chartHeight)
+              .attr("fill", "lightgrey")
+              .attr("rx", 20)
+              .attr("ry", 20)
 
-        arcs.append("path")
-          .attr("fill", function(d, i) {
-              return pie_color(i);
-          })
-          .attr("d", arc);
+          // country name drawn
+          let name = chartArea.append("text")
+              .attr("x", width/2)
+              .attr("y", 50)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 30)
+              .style("opacity", "1")
+              .text(d3.select(this).datum().properties.name)
 
-        // --- PIE CHART DICTIONARY ---
-        var data_dict = [
-          {"label": "Freedom of life choices", "value": freedom},
-          {"label": "GDP per capita", "value": gdp},
-          {"label": "Generosity", "value": generosity},
-          {"label": "Healthy life expectancy", "value": life_expectancy},
-          {"label": "Perceptions of corruption", "value": corruption},
-          {"label": "Social support", "value": social_support}
-        ];
+          // --- Pie Chart appears ---
+          try {
+          this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
+          let rank = this_country[0]["Overall rank"];
+          let freedom = this_country[0]["Freedom to make life choices"];
+          let gdp = this_country[0]["GDP per capita"];
+          let generosity = this_country[0]["Generosity"];
+          let life_expectancy = this_country[0]["Healthy life expectancy"];
+          let corruption = this_country[0]["Perceptions of corruption"];
+          let social_support = this_country[0]["Social support"];
+          let score = this_country[0]["Score"];
+          var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
 
-        // --- PIE CHART LEGEND ---
-        data_dict.forEach( (d, i) => {
-          chartArea.append("text")
-            .attr("x", chartWidth/2)
-            .attr("y", chartHeight - (40 + 20*i))
-            .attr("font-family", "Verdana, sans-serif")
-            .text(d["rank"]);
+          var radius = 100;
+
+          var arc = d3.arc()
+                    .innerRadius(0) // increase for donut chart
+                    .outerRadius(radius);
+
+          var arcs = chartArea.selectAll("arc")
+                    .data(pie(data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc")
+                    .attr("transform",`translate(${width/2},${2*height/5})`);
+
+          arcs.append("path")
+            .attr("fill", function(d, i) {
+                return pie_color(i);
+            })
+            .attr("d", arc);
+
+          // --- PIE CHART DICTIONARY ---
+          var data_dict = [
+            {"label": "Freedom of life choices", "value": freedom},
+            {"label": "GDP per capita", "value": gdp},
+            {"label": "Generosity", "value": generosity},
+            {"label": "Healthy life expectancy", "value": life_expectancy},
+            {"label": "Perceptions of corruption", "value": corruption},
+            {"label": "Social support", "value": social_support}
+          ];
+
+          // --- PIE CHART LEGEND ---
+          data_dict.forEach( (d, i) => {
+            chartArea.append("text")
+              .attr("x", chartWidth/2)
+              .attr("y", chartHeight - (40 + 20*i))
+              .attr("font-family", "Verdana, sans-serif")
+              .text(d["rank"]);
+
+            chartArea.append("text")
+              .attr("x", 50)
+              .attr("y", chartHeight - (40 + 20*i))
+              .attr("font-family", "Verdana, sans-serif")
+              .text(d["label"] + ": ");
+
+            chartArea.append("text")
+              .attr("x", chartWidth - 50)
+              .attr("y", chartHeight - (40 + 20*i))
+              .attr("text-anchor", "end")
+              .attr("font-family", "Verdana, sans-serif")
+              .text(d["value"]);
+
+            chartArea.append("circle")
+              .attr("cx", 40)
+              .attr("cy", chartHeight - (45 + 20*i))
+              .attr("r", 5)
+              .attr("fill", pie_color(i))
+          });
+
+          chartArea.append("line")
+            .attr("x1", 35)
+            .attr("x2", chartWidth - 50)
+            .attr("y1", chartHeight - 30)
+            .attr("y2", chartHeight - 30)
+            .attr("stroke-width", 1)
+            .attr("stroke", "black")
 
           chartArea.append("text")
             .attr("x", 50)
-            .attr("y", chartHeight - (40 + 20*i))
+            .attr("y", chartHeight - 10)
             .attr("font-family", "Verdana, sans-serif")
-            .text(d["label"] + ": ");
+            .text("Total Happiness Score: ");
 
           chartArea.append("text")
             .attr("x", chartWidth - 50)
-            .attr("y", chartHeight - (40 + 20*i))
+            .attr("y", chartHeight - 10)
             .attr("text-anchor", "end")
             .attr("font-family", "Verdana, sans-serif")
-            .text(d["value"]);
+            .text(score);
 
-          chartArea.append("circle")
-            .attr("cx", 40)
-            .attr("cy", chartHeight - (45 + 20*i))
-            .attr("r", 5)
-            .attr("fill", pie_color(i))
+          // Country Rank
+          chartArea.append("text")
+              .attr("x", width/2)
+              .attr("y", 80)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 20)
+              .style("opacity", "1")
+              .text("#" + rank + " Happiest Nation")
+          }
+
+          catch (TypeError) {
+            // console.log("Country has no data")
+          }
+
+          // Map Visual Feedback
+          // If country selected is a country with no data, set all opacities to 1
+          if (d3.select(this).style("fill") === "rgb(211, 211, 211)") {
+            mycountries.attr("opacity", 1);
+          }
+          // If map opacity is 1 and a country is clicked, set rest of opacities to 0.6
+          else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
+                    parseFloat(d3.select(".countries").style("opacity")) === 1 ) {
+            mycountries.attr("opacity", 0.6);
+            d3.select(this).attr("opacity", 1);
+          }
+          // If map opacity is 0.6 and a country is reclicked, set all opacities to 1
+          else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
+                    parseFloat(d3.select(".countries").style("opacity")) === 0.6 ) {
+            mycountries.attr("opacity", 1);
+          }
+          // If a country with opacity 0.6 is clicked, set that as target
+          else if (parseFloat(d3.select(this).style("opacity")) === 0.6) {
+            mycountries.attr("opacity", 0.6);
+            d3.select(this).attr("opacity", 1);
+          }
+
+        }); // END OF ON CLICK
+
+
+        mycountries.on("mouseover", function() {
+          d3.select(this).attr("stroke","black")
+                         .attr("stroke-width", 1.5);
         });
 
-        chartArea.append("line")
-          .attr("x1", 35)
-          .attr("x2", chartWidth - 50)
-          .attr("y1", chartHeight - 30)
-          .attr("y2", chartHeight - 30)
-          .attr("stroke-width", 1)
-          .attr("stroke", "black")
+        mycountries.on("mouseout", function() {
+          d3.select(this).attr("stroke","black")
+                         .attr("stroke-width", 0.5);
+        });
 
-        chartArea.append("text")
-          .attr("x", 50)
-          .attr("y", chartHeight - 10)
-          .attr("font-family", "Verdana, sans-serif")
-          .text("Total Happiness Score: ");
+      } // end of async function
 
-        chartArea.append("text")
-          .attr("x", chartWidth - 50)
-          .attr("y", chartHeight - 10)
-          .attr("text-anchor", "end")
-          .attr("font-family", "Verdana, sans-serif")
-          .text(score);
-
-        // Country Rank
-        chartArea.append("text")
-            .attr("x", width/2)
-            .attr("y", 80)
-            .attr("text-anchor", "middle")
-            .attr("font-family", "Verdana, sans-serif")
-            .style("font-size", 20)
-            .style("opacity", "1")
-            .text("#" + rank + " Happiest Nation")
-        }
-
-        catch (TypeError) {
-          // console.log("Country has no data")
-        }
-
-        // Map Visual Feedback
-        // If country selected is a country with no data, set all opacities to 1
-        if (d3.select(this).style("fill") === "rgb(211, 211, 211)") {
-          mycountries.attr("opacity", 1);
-        }
-        // If map opacity is 1 and a country is clicked, set rest of opacities to 0.6
-        else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
-                  parseFloat(d3.select(".countries").style("opacity")) === 1 ) {
-          mycountries.attr("opacity", 0.6);
-          d3.select(this).attr("opacity", 1);
-        }
-        // If map opacity is 0.6 and a country is reclicked, set all opacities to 1
-        else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
-                  parseFloat(d3.select(".countries").style("opacity")) === 0.6 ) {
-          mycountries.attr("opacity", 1);
-        }
-        // If a country with opacity 0.6 is clicked, set that as target
-        else if (parseFloat(d3.select(this).style("opacity")) === 0.6) {
-          mycountries.attr("opacity", 0.6);
-          d3.select(this).attr("opacity", 1);
-        }
-
-      }); // END OF ON CLICK
-
-
-      mycountries.on("mouseover", function() {
-        d3.select(this).attr("stroke","black")
-                       .attr("stroke-width", 1.5);
-      });
-
-      mycountries.on("mouseout", function() {
-        d3.select(this).attr("stroke","black")
-                       .attr("stroke-width", 0.5);
-      });
-
-    } // end of async function
-
-    drawMap();
-
+      drawMap();
 
     </script>
+  </p>
+
+    <!--- VISUALIZATION 2 -->
+  <p id="p2">
 
     <svg id="scatterplot" width="800" height="500"></svg>
     <script>
@@ -463,5 +473,5 @@
         })
       }))
     </script>
-
-  </p></body>
+  </p>
+</body>
