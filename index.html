@@ -7,9 +7,8 @@
 <title>INFO 3300 Project 2 </title> </head>
 
 <body><p id="p1">
-  <h1> Visualization 1 </h1>
 
-  <svg id= "map" height="700" width="800" ></svg>
+  <svg id= "map" height="700" width="600" ></svg>
   <svg id="maplegend" width="600" height="40"></svg>
   <svg id= "countryChart" height="500" width="500" ></svg>
 
@@ -236,8 +235,7 @@
         let score = this_country[0]["Score"];
         var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
 
-        //var radius = 100;
-        var radius = happinessScale(score);
+        var radius = 100;
 
         var arc = d3.arc()
                   .innerRadius(0) // increase for donut chart
@@ -356,15 +354,13 @@
 
 
       mycountries.on("mouseover", function() {
-        //TODO: alter opacity or stroke or size of country upon mousover
-        //mycountries.attr("opacity", 0.6 );
-        //d3.select(this).attr("opacity", 1 );
-
+        d3.select(this).attr("stroke","black")
+                       .attr("stroke-width", 1.5);
       });
 
       mycountries.on("mouseout", function() {
-        //TODO: return to natural state after mouseover
-
+        d3.select(this).attr("stroke","black")
+                       .attr("stroke-width", 0.5);
       });
 
     } // end of async function
