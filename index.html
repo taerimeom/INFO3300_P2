@@ -370,4 +370,98 @@
 
     </script>
 
+    <svg id="scatterplot" width="800" height="500"></svg>
+    <script>
+        const svg = d3.select("svg#scatterplot").attr("width", 800).attr("height", 500);
+        const width = svg.attr("width");
+        const height = svg.attr("height");
+
+        const margins = {top: 10, right: 10, bottom: 50, left: 50};
+        const chartWidth = width - margins.left - margins.right;
+        const chartHeight = height - margins.top - margins.bottom - 50;
+
+        let annotations = svg.append("g").attr("id","annotations");
+        let chart = svg.append('g')
+        let chartArea = svg.append("g").attr("id","points")
+                                .attr('transform',`translate(${margins.left},${margins.top})`);
+
+        d3.csv("2019.csv", d3.autoType).then((data => {
+          console.log(data)
+          data = data.filter(d=> { return !(d['region_1'] === 'NA' || d['region_1'] === 'N/A')})
+          data.forEach(d => {
+                d['Freedom to make life choices'] = Number(d['Freedom to make life choices'])
+                d['GDP per capita'] = Number(d['GDP per capita'])
+            })
+
+            const freedomExtent = d3.extent(data, d => d['Freedom to make life choices']);
+
+            const gdpExtent = d3.extent(data, d => d['GDP per capita']);
+
+
+            let xScale = d3.scaleLinear().domain(freedomExtent).range([20, chartWidth]);
+            let yScale = d3.scaleLinear().domain(gdpExtent).range([chartHeight, 0]);
+            const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+            let leftAxis = d3.axisLeft(yScale);
+            chart.append('g')
+                .attr('transform',`translate(${margins.left+20},${margins.top})`)
+                .call(leftAxis);
+
+            let leftGridlines = d3.axisLeft(yScale).tickFormat("").tickSize(-chartWidth-10);
+            chart.append('g')
+                .attr('transform',`translate(${margins.left+20},${margins.top})`)
+                .call(leftGridlines);
+
+            let bottomAxis = d3.axisBottom(xScale);
+            chart.append('g')
+                .attr('transform',`translate(${margins.left},${chartHeight+margins.top})`)
+                .call(bottomAxis);
+
+            let bottomGridlines = d3.axisBottom(xScale).tickFormat("").tickSize(-chartHeight-10);
+            chart.append('g')
+                .attr('transform',`translate(${margins.left},${chartHeight+margins.top})`)
+                .call(bottomGridlines);
+
+            let xlabel = annotations.append('text')
+            .attr("x", chartWidth/2 - 30)
+            .attr("y", 450)
+            .text("Freedom to make life choices");
+
+            let ylabel = annotations.append('text')
+            .attr("transform", "translate(30," + chartHeight/2 + ")rotate(270)")
+            .text("GDP per capita");
+
+            const jitter = () => (Math.random() * 7) - 4;
+
+            data.forEach(function(d, i) {
+                let circle = chartArea.append("circle")
+                        .attr('cx', xScale(d['Freedom to make life choices']) + jitter())
+                        .attr('cy', yScale(d['GDP per capita'])+ jitter())
+                        .attr('r', 6)
+                        .attr('opacity', 0.5)
+                        .style('fill', colorScale(d.Score))
+
+                circle.on('mouseover', function() {
+                    d3.select(this)
+                    .transition()
+                    .duration(300)
+                    .attr('r', 8)
+                    annotations.append('text')
+                            .attr('class', 'scatter')
+                            .attr('x', 600)
+                            .attr('y', 25)
+                            .text(d['Country or region'])
+                })
+
+                circle.on('mouseout', function() {
+                    d3.select(this)
+                    .transition()
+                    .duration(300)
+                    .attr('r', 6)
+                    d3.selectAll('.scatter').remove();
+                })
+        })
+      }))
+    </script>
+
   </p></body>
