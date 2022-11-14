@@ -542,187 +542,212 @@
               .text(d3.select(this).datum().properties.name)
 
           // --- Pie Chart appears ---
-          try {
-          this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
+          try { // TRY-CATCH FOR PIE CHART
+            this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
 
-          let rank = this_country[0]["Overall rank"];
-          let happiness_score = this_country[0]["Score"];
+            let rank = this_country[0]["Overall rank"];
+            let happiness_score = this_country[0]["Score"];
 
-          pie_data[0] = this_country[0]["Freedom to make life choices"];
-          pie_data[1] = this_country[0]["GDP per capita"];
-          pie_data[2] = this_country[0]["Generosity"];
-          pie_data[3] = this_country[0]["Healthy life expectancy"];
-          pie_data[4] = this_country[0]["Perceptions of corruption"];
-          pie_data[5] = this_country[0]["Social support"];
+            pie_data[0] = this_country[0]["Freedom to make life choices"];
+            pie_data[1] = this_country[0]["GDP per capita"];
+            pie_data[2] = this_country[0]["Generosity"];
+            pie_data[3] = this_country[0]["Healthy life expectancy"];
+            pie_data[4] = this_country[0]["Perceptions of corruption"];
+            pie_data[5] = this_country[0]["Social support"];
 
-          let arcs = chartArea.selectAll("arc")
-                    .data(pie(pie_data))
-                    .enter()
-                    .append("g")
-                    .attr("class", "arc")
-                    .attr("transform",`translate(${width/2},${2*height/5})`);
+            let arcs = chartArea.selectAll("arc")
+                      .data(pie(pie_data))
+                      .enter()
+                      .append("g")
+                      .attr("class", "arc")
+                      .attr("transform",`translate(${width/2},${2*height/5})`);
 
-          arcs.append("path")
-            .attr("fill", function(d, i) {
-                return pie_color(i);
-            })
-            .attr("d", arc);
+            arcs.append("path")
+              .attr("fill", function(d, i) {
+                  return pie_color(i);
+              })
+              .attr("d", arc);
 
-          // --- UPDATE PIE CHART DICTIONARY ---
-          data_dict[0]["value"] = pie_data[0];
-          data_dict[1]["value"] = pie_data[1];
-          data_dict[2]["value"] = pie_data[2];
-          data_dict[3]["value"] = pie_data[3];
-          data_dict[4]["value"] = pie_data[4];
-          data_dict[5]["value"] = pie_data[5];
+            // --- UPDATE PIE CHART DICTIONARY ---
+            data_dict[0]["value"] = pie_data[0];
+            data_dict[1]["value"] = pie_data[1];
+            data_dict[2]["value"] = pie_data[2];
+            data_dict[3]["value"] = pie_data[3];
+            data_dict[4]["value"] = pie_data[4];
+            data_dict[5]["value"] = pie_data[5];
 
-          // --- UPDATE PIE CHART LEGEND ---
-          pie_key(data_dict, happiness_score);
+            // --- UPDATE PIE CHART LEGEND ---
+            pie_key(data_dict, happiness_score);
 
-          // Country Rank
-          chartArea.append("text")
-              .attr("x", width/2)
-              .attr("y", 80)
-              .attr("text-anchor", "middle")
-              .attr("font-family", "Verdana, sans-serif")
-              .style("font-size", 20)
-              .style("opacity", "1")
-              .text("#" + rank + " Happiest Nation")
+            // Country Rank
+            chartArea.append("text")
+                .attr("x", width/2)
+                .attr("y", 80)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "Verdana, sans-serif")
+                .style("font-size", 20)
+                .style("opacity", "1")
+                .text("#" + rank + " Happiest Nation")
+
+          }
+
+          catch (TypeError) { // TRY-CATCH FOR PIE CHART
+              // console.log("Country has no data")
+              chartArea.append("text")
+                  .attr("x", width/2)
+                  .attr("y", 200)
+                  .attr("text-anchor", "middle")
+                  .attr("font-family", "Verdana, sans-serif")
+                  .style("font-size", 15)
+                  .style("opacity", "1")
+                  .text("Happiness data not available for this country.")
+            }
 
           // ------------------------- LINE CHART ON CLICK ------------------------------
 
+          try { //LINE CHART TRY CATCH
+            let line_country = d3.select(this).datum().properties.name;
 
-          let line_country = d3.select(this).datum().properties.name;
+            let isFinland = (element) => (element["Country"] == line_country);
+            let i_15 = data2015.findIndex(isFinland);
+            let i_16 = data2016.findIndex(isFinland);
+            let i_17 = data2017.findIndex(isFinland);
+            let i_18 = data2018.findIndex(isFinland);
+            let i_19 = data2019.findIndex(isFinland);
 
-          let isFinland = (element) => (element["Country"] == line_country);
-          let i_15 = data2015.findIndex(isFinland);
-          let i_16 = data2016.findIndex(isFinland);
-          let i_17 = data2017.findIndex(isFinland);
-          let i_18 = data2018.findIndex(isFinland);
-          let i_19 = data2019.findIndex(isFinland);
+            // get the data 2015-2019 for each country
+            let Finland_data = [
+              { "Country": line_country,
+                "Year": 2015,
+                "Freedom": data2015[i_15]["Freedom"],
+                "Gdp": data2015[i_15]["Gdp"],
+                "Generosity": data2015[i_15]["Generosity"],
+                "Life_expectancy": data2015[i_15]["Life_expectancy"],
+                "Corruption": data2015[i_15]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2016,
+                "Freedom": data2016[i_16]["Freedom"],
+                "Gdp": data2016[i_16]["Gdp"],
+                "Generosity": data2016[i_16]["Generosity"],
+                "Life_expectancy": data2016[i_16]["Life_expectancy"],
+                "Corruption": data2016[i_16]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2017,
+                "Freedom": data2017[i_17]["Freedom"],
+                "Gdp": data2017[i_17]["Gdp"],
+                "Generosity": data2017[i_17]["Generosity"],
+                "Life_expectancy": data2017[i_17]["Life_expectancy"],
+                "Corruption": data2017[i_17]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2018,
+                "Freedom": data2018[i_18]["Freedom"],
+                "Gdp": data2018[i_18]["Gdp"],
+                "Generosity": data2018[i_18]["Generosity"],
+                "Life_expectancy": data2018[i_18]["Life_expectancy"],
+                "Corruption": data2018[i_18]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2019,
+                "Freedom": data2019[i_19]["Freedom"],
+                "Gdp": data2019[i_19]["Gdp"],
+                "Generosity": data2019[i_19]["Generosity"],
+                "Life_expectancy": data2019[i_19]["Life_expectancy"],
+                "Corruption": data2019[i_19]["Corruption"]
+              }
+            ]
 
-          // get the data 2015-2019 for each country
-          let Finland_data = [
-            { "Country": line_country,
-              "Year": 2015,
-              "Freedom": data2015[i_15]["Freedom"],
-              "Gdp": data2015[i_15]["Gdp"],
-              "Generosity": data2015[i_15]["Generosity"],
-              "Life_expectancy": data2015[i_15]["Life_expectancy"],
-              "Corruption": data2015[i_15]["Corruption"]
-            },
-            { "Country": line_country,
-              "Year": 2016,
-              "Freedom": data2016[i_16]["Freedom"],
-              "Gdp": data2016[i_16]["Gdp"],
-              "Generosity": data2016[i_16]["Generosity"],
-              "Life_expectancy": data2016[i_16]["Life_expectancy"],
-              "Corruption": data2016[i_16]["Corruption"]
-            },
-            { "Country": line_country,
-              "Year": 2017,
-              "Freedom": data2017[i_17]["Freedom"],
-              "Gdp": data2017[i_17]["Gdp"],
-              "Generosity": data2017[i_17]["Generosity"],
-              "Life_expectancy": data2017[i_17]["Life_expectancy"],
-              "Corruption": data2017[i_17]["Corruption"]
-            },
-            { "Country": line_country,
-              "Year": 2018,
-              "Freedom": data2018[i_18]["Freedom"],
-              "Gdp": data2018[i_18]["Gdp"],
-              "Generosity": data2018[i_18]["Generosity"],
-              "Life_expectancy": data2018[i_18]["Life_expectancy"],
-              "Corruption": data2018[i_18]["Corruption"]
-            },
-            { "Country": line_country,
-              "Year": 2019,
-              "Freedom": data2019[i_19]["Freedom"],
-              "Gdp": data2019[i_19]["Gdp"],
-              "Generosity": data2019[i_19]["Generosity"],
-              "Life_expectancy": data2019[i_19]["Life_expectancy"],
-              "Corruption": data2019[i_19]["Corruption"]
-            }
-          ]
+            // generator the lines for each component for that country
+            Finland_data.forEach( (d, i) => {
 
-          // generator the lines for each component for that country
-          Finland_data.forEach( (d, i) => {
-
-            // LINE GENERATOR
-            let freedomLineGen = d3.line()
-                  .x( d => timeScale(d['Year']) )
-                  .y( d => freedomScale(d["Freedom"]) )
-            chartArea_LC.append("path")
-             .datum(Finland_data)
-             .attr("class", "line")
-             .attr("fill", "none")
-             .attr("stroke", "#66c2a5")
-             .attr("stroke-width", 3)
-             //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
-             .attr("d", freedomLineGen);
+              // LINE GENERATOR
+              let freedomLineGen = d3.line()
+                    .x( d => timeScale(d['Year']) )
+                    .y( d => freedomScale(d["Freedom"]) )
+              chartArea_LC.append("path")
+               .datum(Finland_data)
+               .attr("class", "line")
+               .attr("fill", "none")
+               .attr("stroke", "#66c2a5")
+               .attr("stroke-width", 3)
+               //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+               .attr("d", freedomLineGen);
 
 
-            let gdpLineGen = d3.line()
-                   .x( d => timeScale(d['Year']) )
-                   .y( d => freedomScale(d["Gdp"]) )
-            chartArea_LC.append("path")
-                .datum(Finland_data)
-                .attr("class", "line")
-                .attr("fill", "none")
-                .attr("stroke", "#fc8d62")
-                .attr("stroke-width", 3)
-                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
-                .attr("d", gdpLineGen);
+              let gdpLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Gdp"]) )
+              chartArea_LC.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#fc8d62")
+                  .attr("stroke-width", 3)
+                  //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                  .attr("d", gdpLineGen);
 
-            let generosityLineGen = d3.line()
-                   .x( d => timeScale(d['Year']) )
-                   .y( d => freedomScale(d["Generosity"]) )
-            chartArea_LC.append("path")
-                .datum(Finland_data)
-                .attr("class", "line")
-                .attr("fill", "none")
-                .attr("stroke", "#8da0cb")
-                .attr("stroke-width", 3)
-                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
-                .attr("d", generosityLineGen);
+              let generosityLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Generosity"]) )
+              chartArea_LC.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#8da0cb")
+                  .attr("stroke-width", 3)
+                  //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                  .attr("d", generosityLineGen);
 
-            let lifeLineGen = d3.line()
-                   .x( d => timeScale(d['Year']) )
-                   .y( d => freedomScale(d["Life_expectancy"]) )
-            chartArea_LC.append("path")
-                .datum(Finland_data)
-                .attr("class", "line")
-                .attr("fill", "none")
-                .attr("stroke", "#e78ac3")
-                .attr("stroke-width", 3)
-                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
-                .attr("d", lifeLineGen);
+              let lifeLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Life_expectancy"]) )
+              chartArea_LC.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#e78ac3")
+                  .attr("stroke-width", 3)
+                  //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                  .attr("d", lifeLineGen);
 
-            let corruptionLineGen = d3.line()
-                   .x( d => timeScale(d['Year']) )
-                   .y( d => freedomScale(d["Corruption"]) )
-            chartArea_LC.append("path")
-                .datum(Finland_data)
-                .attr("class", "line")
-                .attr("fill", "none")
-                .attr("stroke", "#ffd92f")
-                .attr("stroke-width", 3)
-                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
-                .attr("d", corruptionLineGen);
+              let corruptionLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Corruption"]) )
+              chartArea_LC.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#ffd92f")
+                  .attr("stroke-width", 3)
+                  //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                  .attr("d", corruptionLineGen);
 
-            let socialLineGen = d3.line()
-                   .x( d => timeScale(d['Year']) )
-                   .y( d => freedomScale(d["Social_support"]) )
-            chartArea_LC.append("path")
-                .datum(Finland_data)
-                .attr("class", "line")
-                .attr("fill", "none")
-                .attr("stroke", "#e5c494")
-                .attr("stroke-width", 3)
-                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
-                .attr("d", socialLineGen);
+              let socialLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Social_support"]) )
+              chartArea_LC.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#e5c494")
+                  .attr("stroke-width", 3)
+                  //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                  .attr("d", socialLineGen);
 
-          });
+            });
+          }
+          catch(TypeError){ //TRY-CATCH FOR LINE CHART
+            chartArea_LC.append("text")
+                .attr("x", chartWidth_LC/2)
+                .attr("y", 200)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "Verdana, sans-serif")
+                .style("font-size", 12)
+                .style("opacity", "1")
+                .text("Data (2015-2019) not available for this country.")
+          }
 
           // title of graph as the country
           /*
@@ -735,21 +760,6 @@
           */
 
           // ------------------------- END OF LINE CHART ON CLICK ------------------------------
-
-
-          }
-
-          catch (TypeError) {
-            // console.log("Country has no data")
-            chartArea.append("text")
-                .attr("x", width/2)
-                .attr("y", 200)
-                .attr("text-anchor", "middle")
-                .attr("font-family", "Verdana, sans-serif")
-                .style("font-size", 15)
-                .style("opacity", "1")
-                .text("Happiness data not available for this country.")
-          }
 
           // Map Visual Feedback
           // If country selected is a country with no data, set all opacities to 1
