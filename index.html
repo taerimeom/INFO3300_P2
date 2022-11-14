@@ -472,7 +472,8 @@
 
 
         // X-AXIS (axisBottom)
-        const timeScale = d3.scaleLinear().domain([2015,2019]).range([0, chartWidth_LC]);
+        const timeExtent = d3.extent(years);
+        const timeScale = d3.scaleLinear().domain(timeExtent).range([0, chartWidth_LC]);
         let bottomAxis_LC = d3.axisBottom(timeScale)
         let bottomGridlines_LC = d3.axisBottom(timeScale)
                                 .tickSize(-chartHeight_LC-10)
