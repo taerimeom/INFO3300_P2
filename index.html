@@ -15,9 +15,10 @@
     <h1>INFO 3300 Project 2</h1>
     <h3>by Fatima Yuen (fy46), Katherine Vella (skv25), Lea Jih-Vieira (laj74), Taerim Eom (te89)</h3>
 
-    <svg id= "map" height="500" width="600" style="border:1px solid black"></svg>
+    <svg id= "map" height="480" width="500"
+        style="border:1px solid black; border-radius: 20px"></svg>
     <svg id= "countryChart" height="500" width="500" ></svg>
-    <svg id="maplegend" width="600" height="40"></svg>
+    <svg id="maplegend" width="500" height="40"></svg>
 
     <script>
 
@@ -155,9 +156,12 @@
           var mapScale = d3.scaleSequential(d3.interpolateYlGnBu)
               .domain([99,0]); //flipped domain to make it blue to yellow
 
+              const svg_legend = d3.select("svg#maplegend");
+              const legend_width = svg_legend.attr("width");
+
           var xScale = d3.scaleLinear()
               .domain([0,99])
-              .range([0, 600]);
+              .range([0, legend_width]);
 
           var u = d3.select("#maplegend")
               .selectAll("rect")
