@@ -355,7 +355,7 @@
               .attr("ry", 20)
 
           // country name drawn
-          let name = chartArea.append("text")
+          var name = chartArea.append("text")
               .attr("x", width/2)
               .attr("y", 50)
               .attr("text-anchor", "middle")
@@ -566,7 +566,7 @@
   </p>
 
   <p id="3">
-    <svg id="linePlot" width="1000" height="500"></svg>
+    <svg id="linePlot" width="500" height="500"></svg>
       <script>
 
           const drawLines = async function() {
@@ -729,38 +729,11 @@
             let chartArea = svg.append("g").attr("id","points")
                             .attr("transform",`translate(${margin.left},${margin.top})`);
 
-            /*
-            let finland_freedom = [
-              { "Country": "Finland",
-                "Year": 2015,
-                //"Freedom": data2015[5]["Freedom"]
-                "Freedom": data2015[45]["Freedom"]
-              },
-              { "Country": "Finland",
-                "Year": 2016,
-                "Freedom": data2016[45]["Freedom"]
-              },
-              { "Country": "Finland",
-                "Year": 2017,
-                "Freedom": data2017[45]["Freedom"]
-              },
-              { "Country": "Finland",
-                "Year": 2018,
-                "Freedom": data2018[45]["Freedom"]
-              },
-              { "Country": "Finland",
-                "Year": 2019,
-                "Freedom": data2019[45]["Freedom"]
-              }
-            ]
-            */
-
             let years = [2015, 2016, 2017, 2018, 2019]
-
 
             // Y-AXIS (axisLeft)
             //const freedomExtent = d3.extent(  );
-            const freedomScale = d3.scaleLinear().domain([0,3]).range([chartHeight, 0]);
+            const freedomScale = d3.scaleLinear().domain([0,2]).range([chartHeight, 0]);
             let leftAxis = d3.axisLeft(freedomScale)
             let leftGridlines = d3.axisLeft(freedomScale)
                                   .tickSize(-chartWidth-10)
@@ -793,57 +766,60 @@
 
 
             // PATH -- for one country, draw all paths
-            let line_country = "Finland";
-            let i = 45;
+            let line_country = "Russia";
 
+            let isFinland = (element) => (element["Country"] == line_country);
+            let i_15 = data2015.findIndex(isFinland);
+            let i_16 = data2016.findIndex(isFinland);
+            let i_17 = data2017.findIndex(isFinland);
+            let i_18 = data2018.findIndex(isFinland);
+            let i_19 = data2019.findIndex(isFinland);
+
+            // get the data 2015-2019 for each country
             let Finland_data = [
               { "Country": line_country,
                 "Year": 2015,
-                "Freedom": data2015[i]["Freedom"],
-                "Gdp": data2015[i]["Gdp"],
-                "Generosity": data2015[i]["Generosity"],
-                "Life_expectancy": data2015[i]["Life_expectancy"],
-                "Corruption": data2015[i]["Corruption"]
+                "Freedom": data2015[i_15]["Freedom"],
+                "Gdp": data2015[i_15]["Gdp"],
+                "Generosity": data2015[i_15]["Generosity"],
+                "Life_expectancy": data2015[i_15]["Life_expectancy"],
+                "Corruption": data2015[i_15]["Corruption"]
               },
               { "Country": line_country,
                 "Year": 2016,
-                "Freedom": data2016[i]["Freedom"],
-                "Gdp": data2016[i]["Gdp"],
-                "Generosity": data2016[i]["Generosity"],
-                "Life_expectancy": data2016[i]["Life_expectancy"],
-                "Corruption": data2016[i]["Corruption"]
+                "Freedom": data2016[i_16]["Freedom"],
+                "Gdp": data2016[i_16]["Gdp"],
+                "Generosity": data2016[i_16]["Generosity"],
+                "Life_expectancy": data2016[i_16]["Life_expectancy"],
+                "Corruption": data2016[i_16]["Corruption"]
               },
               { "Country": line_country,
                 "Year": 2017,
-                "Freedom": data2017[i]["Freedom"],
-                "Gdp": data2017[i]["Gdp"],
-                "Generosity": data2017[i]["Generosity"],
-                "Life_expectancy": data2017[i]["Life_expectancy"],
-                "Corruption": data2017[i]["Corruption"]
+                "Freedom": data2017[i_17]["Freedom"],
+                "Gdp": data2017[i_17]["Gdp"],
+                "Generosity": data2017[i_17]["Generosity"],
+                "Life_expectancy": data2017[i_17]["Life_expectancy"],
+                "Corruption": data2017[i_17]["Corruption"]
               },
               { "Country": line_country,
                 "Year": 2018,
-                "Freedom": data2018[i]["Freedom"],
-                "Gdp": data2018[i]["Gdp"],
-                "Generosity": data2018[i]["Generosity"],
-                "Life_expectancy": data2018[i]["Life_expectancy"],
-                "Corruption": data2018[i]["Corruption"]
+                "Freedom": data2018[i_18]["Freedom"],
+                "Gdp": data2018[i_18]["Gdp"],
+                "Generosity": data2018[i_18]["Generosity"],
+                "Life_expectancy": data2018[i_18]["Life_expectancy"],
+                "Corruption": data2018[i_18]["Corruption"]
               },
               { "Country": line_country,
                 "Year": 2019,
-                "Freedom": data2019[i]["Freedom"],
-                "Gdp": data2019[i]["Gdp"],
-                "Generosity": data2019[i]["Generosity"],
-                "Life_expectancy": data2019[i]["Life_expectancy"],
-                "Corruption": data2019[i]["Corruption"]
+                "Freedom": data2019[i_19]["Freedom"],
+                "Gdp": data2019[i_19]["Gdp"],
+                "Generosity": data2019[i_19]["Generosity"],
+                "Life_expectancy": data2019[i_19]["Life_expectancy"],
+                "Corruption": data2019[i_19]["Corruption"]
               }
             ]
 
-            //console.log(data2015[data2015["Country"] == "Finland"]])
-            const isFinland = (element) => element["Country"] == "Finland";
-            console.log(data2019.findIndex(isFinland));
-
-
+            // generator the lines for each component for that country
             Finland_data.forEach( (d, i) => {
 
               // LINE GENERATOR
@@ -916,13 +892,13 @@
 
             });
 
-             chartArea.append("text")
-                .attr("x", width/2)
-                .attr("y", -5)
-                .attr("text-anchor", "middle")
-                .attr("font-size", 30)
-                .text(line_country);
-
+            // title of graph as the country
+            chartArea.append("text")
+              .attr("x", width/2)
+              .attr("y", -5)
+              .attr("text-anchor", "middle")
+              .attr("font-size", 30)
+              .text(line_country);
 
           } // end of requestData
 
