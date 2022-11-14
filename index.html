@@ -402,6 +402,14 @@
 
           catch (TypeError) {
             // console.log("Country has no data")
+            chartArea.append("text")
+                .attr("x", width/2)
+                .attr("y", 200)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "Verdana, sans-serif")
+                .style("font-size", 15)
+                .style("opacity", "1")
+                .text("Happiness data not available for this country.")
           }
 
           // Map Visual Feedback
