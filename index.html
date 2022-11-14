@@ -557,7 +557,7 @@
   </p>
 
   <p id="3">
-    <svg id="linePlot" width="500" height="500"></svg>
+    <svg id="linePlot" width="1000" height="500"></svg>
       <script>
 
           const drawLines = async function() {
@@ -642,18 +642,18 @@
             }
 
             data2015 = data2015.sort(compareName);
-            data2016 = data2015.sort(compareName);
-            data2017 = data2015.sort(compareName);
-            data2018 = data2015.sort(compareName);
-            data2019 = data2015.sort(compareName);
+            data2016 = data2016.sort(compareName);
+            data2017 = data2017.sort(compareName);
+            data2018 = data2018.sort(compareName);
+            data2019 = data2019.sort(compareName);
 
-            /*
+
             console.log(data2015);
             console.log(data2016);
             console.log(data2017);
             console.log(data2018);
             console.log(data2019);
-            */
+
 
             //Finland freedom 2015-2019
             const svg = d3.select("svg#linePlot");
@@ -672,27 +672,28 @@
               { "Country": "Finland",
                 "Year": 2015,
                 //"Freedom": data2015[5]["Freedom"]
-                "Freedom": data2015["Freedom"]
+                "Freedom": data2015[45]["Freedom"]
               },
               { "Country": "Finland",
                 "Year": 2016,
-                "Freedom": data2016[4]["Freedom"]
+                "Freedom": data2016[45]["Freedom"]
               },
               { "Country": "Finland",
                 "Year": 2017,
-                "Freedom": data2017[4]["Freedom"]
+                "Freedom": data2017[45]["Freedom"]
               },
               { "Country": "Finland",
                 "Year": 2018,
-                "Freedom": data2018[0]["Freedom to make life choices"]
+                "Freedom": data2018[45]["Freedom"]
               },
               { "Country": "Finland",
                 "Year": 2019,
-                "Freedom": data2019[0]["Freedom to make life choices"]
+                "Freedom": data2019[45]["Freedom"]
               }
             ]
 
             let years = [2015, 2016, 2017, 2018, 2019]
+            console.log(finland_freedom)
 
 
             // Y-AXIS (axisLeft)
@@ -733,14 +734,45 @@
                   .x( d => timeScale(d['Year']) )
                   .y( d => finland_freedomScale(d['Freedom']) )
 
-            // PATH
-            chartArea.append("path")
-               .datum(finland_freedom)
-               .attr("class", "line")
-               .attr("fill", "none")   // using attr here, style would work too
-               .attr("stroke", "steelblue")
-               .attr("stroke-width", 3)
-               .attr("d", lineGen);
+            // PATH -- for each country, draw a path
+            data2015.forEach( (d, i) => {
+              //console.log(d["Country"]);
+
+              let country_freedom = [
+                { "Country": d["Country"],
+                  "Year": 2015,
+                  //"Freedom": data2015[5]["Freedom"]
+                  "Freedom": data2015[i]["Freedom"]
+                },
+                { "Country": d["Country"],
+                  "Year": 2016,
+                  "Freedom": data2016[i]["Freedom"]
+                },
+                { "Country": d["Country"],
+                  "Year": 2017,
+                  "Freedom": data2017[i]["Freedom"]
+                },
+                { "Country": d["Country"],
+                  "Year": 2018,
+                  "Freedom": data2018[i]["Freedom"]
+                },
+                { "Country": d["Country"],
+                  "Year": 2019,
+                  "Freedom": data2019[i]["Freedom"]
+                }
+              ]
+
+              chartArea.append("path")
+                 .datum(country_freedom)
+                 .attr("class", "line")
+                 .attr("fill", "none")   // using attr here, style would work too
+                 .attr("stroke", "steelblue")
+                 .attr("stroke-width", 3)
+                 .attr("d", lineGen);
+
+            });
+
+
 
 
 
