@@ -7,6 +7,15 @@
   <script src="http://d3js.org/topojson.v1.min.js"></script>
 
   <title>INFO 3300 Project 2 </title>
+  <style>
+      .gridlines .domain {
+        display: none;
+      }
+
+      .gridlines line {
+        stroke: #bbb;
+      }
+  </style>
 </head>
 
 <body>
@@ -779,6 +788,7 @@
             annotations.append("g")
               .attr("class", "x gridlines")
               .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
+              .style("stroke", "lightgrey")
               .call(bottomGridlines);
 
 
@@ -828,6 +838,10 @@
                 "Corruption": data2019[i]["Corruption"]
               }
             ]
+
+            //console.log(data2015[data2015["Country"] == "Finland"]])
+            const isFinland = (element) => element["Country"] == "Finland";
+            console.log(data2019.findIndex(isFinland));
 
 
             Finland_data.forEach( (d, i) => {
@@ -908,7 +922,6 @@
                 .attr("text-anchor", "middle")
                 .attr("font-size", 30)
                 .text(line_country);
-
 
 
           } // end of requestData
