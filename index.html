@@ -555,4 +555,122 @@
       }))
     </script>
   </p>
+
+  <p id="3">
+    <svg id="linePlot" width="500" height="500"></svg>
+      <script>
+
+          const drawLines = async function() {
+            let data2015 = await d3.csv("2015.csv");
+            let data2016 = await d3.csv("2016.csv");
+            let data2017 = await d3.csv("2017.csv");
+            let data2018 = await d3.csv("2018.csv");
+            let data2019 = await d3.csv("2019.csv");
+
+            /*
+            // CLEAN THE DATASETS
+            data2015 = data2015.map(function(row) {
+              return { Country: data2015["Country"],
+                       Freedom: data2015["Freedom"] }
+            })
+            */
+
+            console.log(data2015);
+
+            //Finland freedom 2015-2019
+            const svg = d3.select("svg#linePlot");
+            const width = svg.attr("width");
+            const height = svg.attr("height");
+            const margin = {top: 10, right: 10, bottom: 50, left: 50};
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+
+            let annotations = svg.append("g").attr("id","annotations");
+            let chartArea = svg.append("g").attr("id","points")
+                            .attr("transform",`translate(${margin.left},${margin.top})`);
+
+
+            let finland_freedom = [
+              { "Country": "Finland",
+                "Year": 2015,
+                "Freedom": data2015[5]["Freedom"]
+              },
+              { "Country": "Finland",
+                "Year": 2016,
+                "Freedom": data2016[4]["Freedom"]
+              },
+              { "Country": "Finland",
+                "Year": 2017,
+                "Freedom": data2017[4]["Freedom"]
+              },
+              { "Country": "Finland",
+                "Year": 2018,
+                "Freedom": data2018[0]["Freedom to make life choices"]
+              },
+              { "Country": "Finland",
+                "Year": 2019,
+                "Freedom": data2019[0]["Freedom to make life choices"]
+              }
+            ]
+
+            let years = [2015, 2016, 2017, 2018, 2019]
+
+
+            // Y-AXIS (axisLeft)
+            const finland_freedomExtent = d3.extent(finland_freedom, d => d['Freedom']);
+            const finland_freedomScale = d3.scaleLinear().domain(finland_freedomExtent).range([chartHeight, 0]);
+            let leftAxis = d3.axisLeft(finland_freedomScale)
+            let leftGridlines = d3.axisLeft(finland_freedomScale)
+                                  .tickSize(-chartWidth-10)
+                                  .tickFormat("")
+            annotations.append("g")
+              .attr("class", "y axis")
+              .attr("transform",`translate(${margin.left-10},${margin.top})`)
+              .call(leftAxis)
+            annotations.append("g")
+              .attr("class", "y gridlines")
+              .attr("transform",`translate(${margin.left-10},${margin.top})`)
+              .call(leftGridlines);
+
+
+            // X-AXIS (axisBottom)
+            const timeScale = d3.scaleLinear().domain([2015,2019]).range([0, chartWidth]);
+            let bottomAxis = d3.axisBottom(timeScale)
+            let bottomGridlines = d3.axisBottom(timeScale)
+                                    .tickSize(-chartHeight-10)
+                                    .tickFormat("")
+            annotations.append("g")
+              .attr("class", "x axis")
+              .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
+              .call(bottomAxis);
+            annotations.append("g")
+              .attr("class", "x gridlines")
+              .attr("transform",`translate(${margin.left},${chartHeight+margin.top+10})`)
+              .call(bottomGridlines);
+
+
+            // LINE GENERATOR
+            var lineGen = d3.line()
+                  .x( d => timeScale(d['Year']) )
+                  .y( d => finland_freedomScale(d['Freedom']) )
+
+            // PATH
+            chartArea.append("path")
+               .datum(finland_freedom)
+               .attr("class", "line")
+               .attr("fill", "none")   // using attr here, style would work too
+               .attr("stroke", "steelblue")
+               .attr("stroke-width", 3)
+               .attr("d", lineGen);
+
+
+
+          } // end of requestData
+
+          drawLines();
+
+      </script>
+
+  </p>
+
 </body>
