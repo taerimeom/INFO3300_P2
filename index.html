@@ -224,16 +224,18 @@
             global_score_T += Number(d['Score'])
         });
 
-        let global_freedom_Avg = global_freedom_T/happinessreport.length;
-        let global_gdp_Avg = global_gdp_T/happinessreport.length;
-        let global_generosity_Avg = global_generosity_T/happinessreport.length;
-        let global_life_expectancy_Avg = global_life_expectancy_T/happinessreport.length;
-        let global_corruption_Avg = global_corruption_T/happinessreport.length;
-        let global_social_support_Avg = global_social_support_T/happinessreport.length;
-        let global_score_Avg = global_score_T/happinessreport.length;
 
-        let global_data = [global_freedom_Avg, global_gdp_Avg, global_generosity_Avg, global_life_expectancy_Avg,
-          global_corruption_Avg, global_social_support_Avg];
+        // Calculate global averages
+        let freedom = Math.round(global_freedom_T/happinessreport.length*1000)/1000;
+        let gdp = Math.round(global_gdp_T/happinessreport.length*1000)/1000;
+        let generosity = Math.round(global_generosity_T/happinessreport.length*1000)/1000;
+        let life_expectancy = Math.round(global_life_expectancy_T/happinessreport.length*1000)/1000;
+        let corruption = Math.round(global_corruption_T/happinessreport.length*1000)/1000;
+        let social_support = Math.round(global_social_support_T/happinessreport.length*1000)/1000;
+
+        let happiness_score = Math.round(global_score_T/happinessreport.length*1000)/1000;
+
+        let pie_data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
 
         var radius = 100;
 
@@ -241,8 +243,8 @@
                   .innerRadius(0) // increase for donut chart
                   .outerRadius(radius);
 
-        var arcs = chartArea.selectAll("arc")
-                  .data(pie(global_data))
+        let arcs = chartArea.selectAll("arc")
+                  .data(pie(pie_data))
                   .enter()
                   .append("g")
                   .attr("class", "arc")
@@ -263,73 +265,17 @@
             .style("opacity", "1")
             .text("Global Happiness")
 
+        // --- PIE CHART DICTIONARY ---
+        let data_dict = [
+          {"label": "Freedom of life choices", "value": pie_data[0]},
+          {"label": "GDP per capita", "value": pie_data[1]},
+          {"label": "Generosity", "value": pie_data[2]},
+          {"label": "Healthy life expectancy", "value": pie_data[3]},
+          {"label": "Perceptions of corruption", "value": pie_data[4]},
+          {"label": "Social support", "value": pie_data[5]},
+        ];
 
-        // ON CLICK Function
-        mycountries.on("click", function() {
-
-          // redraw the background...
-          let background = chartArea.append("rect")
-              .attr("x", 0)
-              .attr("y", 0)
-              .attr("width", chartWidth)
-              .attr("height", chartHeight)
-              .attr("fill", "lightgrey")
-              .attr("rx", 20)
-              .attr("ry", 20)
-
-          // country name drawn
-          let name = chartArea.append("text")
-              .attr("x", width/2)
-              .attr("y", 50)
-              .attr("text-anchor", "middle")
-              .attr("font-family", "Verdana, sans-serif")
-              .style("font-size", 30)
-              .style("opacity", "1")
-              .text(d3.select(this).datum().properties.name)
-
-          // --- Pie Chart appears ---
-          try {
-          this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
-          let rank = this_country[0]["Overall rank"];
-          let freedom = this_country[0]["Freedom to make life choices"];
-          let gdp = this_country[0]["GDP per capita"];
-          let generosity = this_country[0]["Generosity"];
-          let life_expectancy = this_country[0]["Healthy life expectancy"];
-          let corruption = this_country[0]["Perceptions of corruption"];
-          let social_support = this_country[0]["Social support"];
-          let score = this_country[0]["Score"];
-          let data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
-
-          var radius = 100;
-
-          var arc = d3.arc()
-                    .innerRadius(0) // increase for donut chart
-                    .outerRadius(radius);
-
-          var arcs = chartArea.selectAll("arc")
-                    .data(pie(data))
-                    .enter()
-                    .append("g")
-                    .attr("class", "arc")
-                    .attr("transform",`translate(${width/2},${2*height/5})`);
-
-          arcs.append("path")
-            .attr("fill", function(d, i) {
-                return pie_color(i);
-            })
-            .attr("d", arc);
-
-          // --- PIE CHART DICTIONARY ---
-          var data_dict = [
-            {"label": "Freedom of life choices", "value": freedom},
-            {"label": "GDP per capita", "value": gdp},
-            {"label": "Generosity", "value": generosity},
-            {"label": "Healthy life expectancy", "value": life_expectancy},
-            {"label": "Perceptions of corruption", "value": corruption},
-            {"label": "Social support", "value": social_support}
-          ];
-
-          // --- PIE CHART LEGEND ---
+        function pie_key(data_dict, happiness_score){
           data_dict.forEach( (d, i) => {
             chartArea.append("text")
               .attr("x", chartWidth/2)
@@ -376,7 +322,72 @@
             .attr("y", chartHeight - 10)
             .attr("text-anchor", "end")
             .attr("font-family", "Verdana, sans-serif")
-            .text(score);
+            .text(happiness_score);
+        }
+
+        pie_key(data_dict, happiness_score);
+
+
+        // ON CLICK Function
+        mycountries.on("click", function() {
+
+          // redraw the background...
+          let background = chartArea.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("width", chartWidth)
+              .attr("height", chartHeight)
+              .attr("fill", "lightgrey")
+              .attr("rx", 20)
+              .attr("ry", 20)
+
+          // country name drawn
+          let name = chartArea.append("text")
+              .attr("x", width/2)
+              .attr("y", 50)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 30)
+              .style("opacity", "1")
+              .text(d3.select(this).datum().properties.name)
+
+          // --- Pie Chart appears ---
+          try {
+          this_country = happinessreport.filter(d => d["Country or region"] == d3.select(this).datum().properties.name);
+
+          let rank = this_country[0]["Overall rank"];
+          let happiness_score = this_country[0]["Score"];
+
+          pie_data[0] = this_country[0]["Freedom to make life choices"];
+          pie_data[1] = this_country[0]["GDP per capita"];
+          pie_data[2] = this_country[0]["Generosity"];
+          pie_data[3] = this_country[0]["Healthy life expectancy"];
+          pie_data[4] = this_country[0]["Perceptions of corruption"];
+          pie_data[5] = this_country[0]["Social support"];
+
+          let arcs = chartArea.selectAll("arc")
+                    .data(pie(pie_data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc")
+                    .attr("transform",`translate(${width/2},${2*height/5})`);
+
+          arcs.append("path")
+            .attr("fill", function(d, i) {
+                return pie_color(i);
+            })
+            .attr("d", arc);
+
+          // --- UPDATE PIE CHART DICTIONARY ---
+          data_dict[0]["value"] = pie_data[0];
+          data_dict[1]["value"] = pie_data[1];
+          data_dict[2]["value"] = pie_data[2];
+          data_dict[3]["value"] = pie_data[3];
+          data_dict[4]["value"] = pie_data[4];
+          data_dict[5]["value"] = pie_data[5];
+
+          // --- UPDATE PIE CHART LEGEND ---
+          pie_key(data_dict, happiness_score);
 
           // Country Rank
           chartArea.append("text")
