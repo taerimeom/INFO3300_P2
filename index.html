@@ -476,6 +476,16 @@
         mycountries.on("click", function() {
           setChart();
 
+          // redraw the background...
+          let background = chartArea.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("width", chartWidth)
+              .attr("height", chartHeight)
+              .attr("fill", "lightgrey")
+              .attr("rx", 20)
+              .attr("ry", 20)
+
           // country name drawn
           var name = chartArea.append("text")
               .attr("x", width/2)
