@@ -647,11 +647,64 @@
             data2018 = data2018.sort(compareName);
             data2019 = data2019.sort(compareName);
 
+            //TODO: DELETE INCONSISTENT COUNTRIES NOT IN 2019
+
+            //Find inconsistent countries based on 2019
+            let countries2015 = [];
+            data2015.forEach( (d, i) => {
+              countries2015.push(d["Country"]);
+            });
+
+            let countries2016 = [];
+            data2016.forEach( (d, i) => {
+              countries2016.push(d["Country"]);
+            });
+
+            let countries2017 = [];
+            data2017.forEach( (d, i) => {
+              countries2017.push(d["Country"]);
+            });
+
+            let countries2018 = [];
+            data2018.forEach( (d, i) => {
+              countries2018.push(d["Country"]);
+            });
+
+            let countries2019 = [];
+            data2019.forEach( (d, i) => {
+              countries2019.push(d["Country"]);
+            });
+
+            const countries_to_remove2015 = countries2015.filter(element => !countries2019.includes(element));
+              // ['Angola', 'Djibouti', 'Macedonia', 'North Cyprus', 'Oman',
+              // 'Somaliland region', 'Sudan', 'Suriname', 'Trinidad and Tobago']
+
+            console.log(countries2019);
+
+            data2015 = data2015.filter(d =>
+              d["Country"] != 'Angola' &&
+              d["Country"] != 'Djibouti' &&
+              d["Country"] != 'Macedonia' &&
+              d["Country"] != 'North Cyprus' &&
+              d["Country"] != 'Oman'
+            );
+
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!GAVE UP ON CLEANING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // let's just try matching the countries later
+
+            const countries_to_remove2016 = countries2016.filter(element => !countries2019.includes(element));
+              //[Angola, Belize, Macedonia, North Cyprus, Puerto Rico, Somaliland Region, Sudan, Suriname, Trinidad and Tobago]
+
+            const countries_to_remove2017 = countries2017.filter(element => !countries2019.includes(element));
+            const countries_to_remove2018 = countries2018.filter(element => !countries2019.includes(element));
+
+            //console.log(countries_to_remove2016);
+
 
             console.log(data2015);
-            console.log(data2016);
-            console.log(data2017);
-            console.log(data2018);
+            //console.log(data2016);
+            //console.log(data2017);
+            //console.log(data2018);
             console.log(data2019);
 
 
@@ -659,7 +712,7 @@
             const svg = d3.select("svg#linePlot");
             const width = svg.attr("width");
             const height = svg.attr("height");
-            const margin = {top: 10, right: 10, bottom: 50, left: 50};
+            const margin = {top: 30, right: 10, bottom: 50, left: 50};
             const chartWidth = width - margin.left - margin.right;
             const chartHeight = height - margin.top - margin.bottom;
 
@@ -667,7 +720,7 @@
             let chartArea = svg.append("g").attr("id","points")
                             .attr("transform",`translate(${margin.left},${margin.top})`);
 
-
+            /*
             let finland_freedom = [
               { "Country": "Finland",
                 "Year": 2015,
@@ -691,16 +744,16 @@
                 "Freedom": data2019[45]["Freedom"]
               }
             ]
+            */
 
             let years = [2015, 2016, 2017, 2018, 2019]
-            console.log(finland_freedom)
 
 
             // Y-AXIS (axisLeft)
-            const finland_freedomExtent = d3.extent(finland_freedom, d => d['Freedom']);
-            const finland_freedomScale = d3.scaleLinear().domain(finland_freedomExtent).range([chartHeight, 0]);
-            let leftAxis = d3.axisLeft(finland_freedomScale)
-            let leftGridlines = d3.axisLeft(finland_freedomScale)
+            //const freedomExtent = d3.extent(  );
+            const freedomScale = d3.scaleLinear().domain([0,3]).range([chartHeight, 0]);
+            let leftAxis = d3.axisLeft(freedomScale)
+            let leftGridlines = d3.axisLeft(freedomScale)
                                   .tickSize(-chartWidth-10)
                                   .tickFormat("")
             annotations.append("g")
@@ -729,50 +782,132 @@
               .call(bottomGridlines);
 
 
-            // LINE GENERATOR
-            var lineGen = d3.line()
-                  .x( d => timeScale(d['Year']) )
-                  .y( d => finland_freedomScale(d['Freedom']) )
+            // PATH -- for one country, draw all paths
+            let line_country = "Finland";
+            let i = 45;
 
-            // PATH -- for each country, draw a path
-            data2015.forEach( (d, i) => {
-              //console.log(d["Country"]);
+            let Finland_data = [
+              { "Country": line_country,
+                "Year": 2015,
+                "Freedom": data2015[i]["Freedom"],
+                "Gdp": data2015[i]["Gdp"],
+                "Generosity": data2015[i]["Generosity"],
+                "Life_expectancy": data2015[i]["Life_expectancy"],
+                "Corruption": data2015[i]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2016,
+                "Freedom": data2016[i]["Freedom"],
+                "Gdp": data2016[i]["Gdp"],
+                "Generosity": data2016[i]["Generosity"],
+                "Life_expectancy": data2016[i]["Life_expectancy"],
+                "Corruption": data2016[i]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2017,
+                "Freedom": data2017[i]["Freedom"],
+                "Gdp": data2017[i]["Gdp"],
+                "Generosity": data2017[i]["Generosity"],
+                "Life_expectancy": data2017[i]["Life_expectancy"],
+                "Corruption": data2017[i]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2018,
+                "Freedom": data2018[i]["Freedom"],
+                "Gdp": data2018[i]["Gdp"],
+                "Generosity": data2018[i]["Generosity"],
+                "Life_expectancy": data2018[i]["Life_expectancy"],
+                "Corruption": data2018[i]["Corruption"]
+              },
+              { "Country": line_country,
+                "Year": 2019,
+                "Freedom": data2019[i]["Freedom"],
+                "Gdp": data2019[i]["Gdp"],
+                "Generosity": data2019[i]["Generosity"],
+                "Life_expectancy": data2019[i]["Life_expectancy"],
+                "Corruption": data2019[i]["Corruption"]
+              }
+            ]
 
-              let country_freedom = [
-                { "Country": d["Country"],
-                  "Year": 2015,
-                  //"Freedom": data2015[5]["Freedom"]
-                  "Freedom": data2015[i]["Freedom"]
-                },
-                { "Country": d["Country"],
-                  "Year": 2016,
-                  "Freedom": data2016[i]["Freedom"]
-                },
-                { "Country": d["Country"],
-                  "Year": 2017,
-                  "Freedom": data2017[i]["Freedom"]
-                },
-                { "Country": d["Country"],
-                  "Year": 2018,
-                  "Freedom": data2018[i]["Freedom"]
-                },
-                { "Country": d["Country"],
-                  "Year": 2019,
-                  "Freedom": data2019[i]["Freedom"]
-                }
-              ]
 
+            Finland_data.forEach( (d, i) => {
+
+              // LINE GENERATOR
+              let freedomLineGen = d3.line()
+                    .x( d => timeScale(d['Year']) )
+                    .y( d => freedomScale(d["Freedom"]) )
               chartArea.append("path")
-                 .datum(country_freedom)
+                 .datum(Finland_data)
                  .attr("class", "line")
-                 .attr("fill", "none")   // using attr here, style would work too
-                 .attr("stroke", "steelblue")
+                 .attr("fill", "none")
+                 .attr("stroke", "#66c2a5")
                  .attr("stroke-width", 3)
-                 .attr("d", lineGen);
+                 .attr("d", freedomLineGen);
+
+              let gdpLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Gdp"]) )
+              chartArea.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#fc8d62")
+                  .attr("stroke-width", 3)
+                  .attr("d", gdpLineGen);
+
+              let generosityLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Generosity"]) )
+              chartArea.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#8da0cb")
+                  .attr("stroke-width", 3)
+                  .attr("d", generosityLineGen);
+
+              let lifeLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Life_expectancy"]) )
+              chartArea.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#e78ac3")
+                  .attr("stroke-width", 3)
+                  .attr("d", lifeLineGen);
+
+              let corruptionLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Corruption"]) )
+              chartArea.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#ffd92f")
+                  .attr("stroke-width", 3)
+                  .attr("d", corruptionLineGen);
+
+              let socialLineGen = d3.line()
+                     .x( d => timeScale(d['Year']) )
+                     .y( d => freedomScale(d["Social_support"]) )
+              chartArea.append("path")
+                  .datum(Finland_data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", "#e5c494")
+                  .attr("stroke-width", 3)
+                  .attr("d", socialLineGen);
+
 
             });
 
-
+             chartArea.append("text")
+                .attr("x", width/2)
+                .attr("y", -5)
+                .attr("text-anchor", "middle")
+                .attr("font-size", 30)
+                .text(line_country);
 
 
 
