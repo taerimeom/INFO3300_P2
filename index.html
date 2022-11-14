@@ -203,15 +203,6 @@
         let chartArea = svg_country.append("g").attr("id","points")
                         .attr("transform",`translate(${margin.left},${margin.top})`);
 
-        let background = chartArea.append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", chartWidth)
-            .attr("height", chartHeight)
-            .attr("fill", "lightgrey")
-            .attr("rx", 20)
-            .attr("ry", 20)
-
         // PIE CHART
         //var data = [10, 5, 4, 6];
         //var data = [0, 0, 0, 0];
@@ -255,27 +246,39 @@
                   .innerRadius(0) // increase for donut chart
                   .outerRadius(radius);
 
-        let arcs = chartArea.selectAll("arc")
-                  .data(pie(pie_data))
-                  .enter()
-                  .append("g")
-                  .attr("class", "arc")
-                  .attr("transform",`translate(${width/2},${2*height/5})`);
+        function global_pie() {
+          let background = chartArea.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("width", chartWidth)
+              .attr("height", chartHeight)
+              .attr("fill", "lightgrey")
+              .attr("rx", 20)
+              .attr("ry", 20)
 
-        arcs.append("path")
-          .attr("fill", function(d, i) {
-              return pie_color(i);
-          })
-          .attr("d", arc);
+          let arcs_g = chartArea.selectAll("arc")
+                    .data(pie(pie_data))
+                    .enter()
+                    .append("g")
+                    .attr("class", "arc")
+                    .attr("transform",`translate(${width/2},${2*height/5})`);
 
-        chartArea.append("text")
-            .attr("x", width/2)
-            .attr("y", 50)
-            .attr("text-anchor", "middle")
-            .attr("font-family", "Verdana, sans-serif")
-            .style("font-size", 30)
-            .style("opacity", "1")
-            .text("Global Happiness")
+          arcs_g.append("path")
+            .attr("fill", function(d, i) {
+                return pie_color(i);
+            })
+            .attr("d", arc);
+
+          chartArea.append("text")
+              .attr("x", width/2)
+              .attr("y", 50)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 30)
+              .style("opacity", "1")
+              .text("Global Happiness")
+        }
+        global_pie();
 
         // --- PIE CHART DICTIONARY ---
         let data_dict = [
@@ -776,6 +779,7 @@
           else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
                     parseFloat(d3.select(".countries").style("opacity")) === 0.6 ) {
             mycountries.attr("opacity", 1);
+            //global_pie();
           }
           // If a country with opacity 0.6 is clicked, set that as target
           else if (parseFloat(d3.select(this).style("opacity")) === 0.6) {
