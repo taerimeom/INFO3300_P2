@@ -491,7 +491,7 @@
 
             let xScale = d3.scaleLinear().domain(freedomExtent).range([20, chartWidth]);
             let yScale = d3.scaleLinear().domain(gdpExtent).range([chartHeight, 0]);
-            const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+            const colorScale = d3.scaleOrdinal(d3.schemeGnBu);
 
             let leftAxis = d3.axisLeft(yScale);
             chart.append('g')
@@ -514,12 +514,18 @@
                 .call(bottomGridlines);
 
             let xlabel = annotations.append('text')
-            .attr("x", chartWidth/2 - 30)
+            .attr("x", chartWidth/2)
             .attr("y", 450)
+            .attr("text-anchor", "middle")
+            .attr("font-family", "Verdana, sans-serif")
+            .style("font-size", 20)
             .text("Freedom to make life choices");
 
             let ylabel = annotations.append('text')
             .attr("transform", "translate(30," + chartHeight/2 + ")rotate(270)")
+            .attr("text-anchor", "middle")
+            .attr("font-family", "Verdana, sans-serif")
+            .style("font-size", 20)
             .text("GDP per capita");
 
             const jitter = () => (Math.random() * 7) - 4;
@@ -541,6 +547,9 @@
                             .attr('class', 'scatter')
                             .attr('x', 600)
                             .attr('y', 25)
+                            .attr("text-anchor", "middle")
+                            .attr("font-family", "Verdana, sans-serif")
+                            .style("font-size", 20)
                             .text(d['Country or region'])
                 })
 
