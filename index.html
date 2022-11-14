@@ -28,6 +28,7 @@
         style="border:1px solid black; border-radius: 20px"></svg>
     <svg id= "countryChart" height="500" width="500" ></svg>
     <svg id="maplegend" width="500" height="40"></svg>
+    <svg id="linePlot" width="500" height="500"></svg>
 
     <script>
 
@@ -340,19 +341,140 @@
 
         pie_key(data_dict, happiness_score);
 
+        // ----------------- LINE CHART STUFF OUTSIDE OF CLICK -------------------
+        let data2015 = await d3.csv("2015.csv");
+        let data2016 = await d3.csv("2016.csv");
+        let data2017 = await d3.csv("2017.csv");
+        let data2018 = await d3.csv("2018.csv");
+        let data2019 = await d3.csv("2019.csv");
+
+        // CLEAN THE DATASETS
+        data2015 = data2015.map(function(country) {
+          return { Country: country["Country"],
+                   Freedom: country["Freedom"],
+                   Gdp: country["Economy (GDP per Capita)"],
+                   Generosity: country["Generosity"],
+                   Life_expectancy: country["Health (Life Expectancy)"],
+                   Corruption: country["Trust (Government Corruption)"],
+                   //Social_support:
+                   Score: country["Happiness Score"]
+                  }
+        });
+        data2016 = data2016.map(function(country) {
+          return { Country: country["Country"],
+                   Freedom: country["Freedom"],
+                   Gdp: country["Economy (GDP per Capita)"],
+                   Generosity: country["Generosity"],
+                   Life_expectancy: country["Health (Life Expectancy)"],
+                   Corruption: country["Trust (Government Corruption)"],
+                   //Social_support:
+                   Score: country["Happiness Score"]
+                  }
+        });
+        data2017 = data2017.map(function(country) {
+          return { Country: country["Country"],
+                   Freedom: country["Freedom"],
+                   Gdp: country["Economy..GDP.per.Capita."],
+                   Generosity: country["Generosity"],
+                   Life_expectancy: country["Health..Life.Expectancy."],
+                   Corruption: country["Trust..Government.Corruption."],
+                   //Social_support:
+                   Score: country["Happiness.Score"]
+                  }
+        });
+        data2018 = data2018.map(function(country) {
+          return { Country: country["Country or region"],
+                   Freedom: country["Freedom to make life choices"],
+                   Gdp: country["GDP per capita"],
+                   Generosity: country["Generosity"],
+                   Life_expectancy: country["Healthy life expectancy"],
+                   Corruption: country["Perceptions of corruption"],
+                   //Social_support: country["Social support"],
+                   Score: country["Score"]
+                  }
+        });
+        data2019 = data2019.map(function(country) {
+          return { Country: country["Country or region"],
+                   Freedom: country["Freedom to make life choices"],
+                   Gdp: country["GDP per capita"],
+                   Generosity: country["Generosity"],
+                   Life_expectancy: country["Healthy life expectancy"],
+                   Corruption: country["Perceptions of corruption"],
+                   //Social_support: country["Social support"],
+                   Score: country["Score"]
+                 }
+        })
+
+        const svg_LC = d3.select("svg#linePlot");
+        const width_LC = svg_LC.attr("width");
+        const height_LC = svg_LC.attr("height");
+        const margin_LC = {top: 30, right: 10, bottom: 80, left: 50};
+        const chartWidth_LC = width_LC - margin_LC.left - margin_LC.right;
+        const chartHeight_LC = height_LC - margin_LC.top - margin_LC.bottom;
+
+        let years = [2015, 2016, 2017, 2018, 2019]
+
+        let annotations_LC = svg_LC.append("g").attr("id","annotations");
+        let chartArea_LC = svg_LC.append("g").attr("id","points")
+                        .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`);
+
+        // Y-AXIS (axisLeft)
+        //const freedomExtent = d3.extent(  );
+        const freedomScale = d3.scaleLinear().domain([0,2]).range([chartHeight_LC, 0]);
+        let leftAxis_LC = d3.axisLeft(freedomScale)
+        let leftGridlines_LC = d3.axisLeft(freedomScale)
+                              .tickSize(-chartWidth_LC-10)
+                              .tickFormat("")
+
+
+
+        // X-AXIS (axisBottom)
+        const timeScale = d3.scaleLinear().domain([2015,2019]).range([0, chartWidth_LC]);
+        let bottomAxis_LC = d3.axisBottom(timeScale)
+        let bottomGridlines_LC = d3.axisBottom(timeScale)
+                                .tickSize(-chartHeight_LC-10)
+                                .tickFormat("")
+
+
+        function setChart(){
+          //draw background
+          chartArea_LC.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", width_LC)
+            .attr("height", height_LC)
+            .attr("fill", "white");
+
+          //Y-axis
+          chartArea_LC.append("g")
+            .attr("class", "y axis")
+            .attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
+            .call(leftAxis_LC)
+          chartArea_LC.append("g")
+            .attr("class", "y gridlines")
+            .attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
+            .call(leftGridlines_LC);
+
+          //X-axis
+          chartArea_LC.append("g")
+            .attr("class", "x axis")
+            .attr("transform",`translate(${margin_LC.left},${chartHeight_LC+margin_LC.top+10})`)
+            .call(bottomAxis_LC);
+          chartArea_LC.append("g")
+            .attr("class", "x gridlines")
+            .attr("transform",`translate(${margin_LC.left},${chartHeight_LC+margin_LC.top+10})`)
+            .style("stroke", "lightgrey")
+            .call(bottomGridlines_LC);
+
+        }
+        setChart();
+
+        // ----------------- END OF LINE CHART STUFF OUTSIDE OF CLICK-------------------
+
 
         // ON CLICK Function
         mycountries.on("click", function() {
-
-          // redraw the background...
-          let background = chartArea.append("rect")
-              .attr("x", 0)
-              .attr("y", 0)
-              .attr("width", chartWidth)
-              .attr("height", chartHeight)
-              .attr("fill", "lightgrey")
-              .attr("rx", 20)
-              .attr("ry", 20)
+          setChart();
 
           // country name drawn
           var name = chartArea.append("text")
@@ -411,6 +533,153 @@
               .style("font-size", 20)
               .style("opacity", "1")
               .text("#" + rank + " Happiest Nation")
+
+          // ------------------------- LINE CHART ON CLICK ------------------------------
+
+
+          let line_country = d3.select(this).datum().properties.name;
+
+          let isFinland = (element) => (element["Country"] == line_country);
+          let i_15 = data2015.findIndex(isFinland);
+          let i_16 = data2016.findIndex(isFinland);
+          let i_17 = data2017.findIndex(isFinland);
+          let i_18 = data2018.findIndex(isFinland);
+          let i_19 = data2019.findIndex(isFinland);
+
+          // get the data 2015-2019 for each country
+          let Finland_data = [
+            { "Country": line_country,
+              "Year": 2015,
+              "Freedom": data2015[i_15]["Freedom"],
+              "Gdp": data2015[i_15]["Gdp"],
+              "Generosity": data2015[i_15]["Generosity"],
+              "Life_expectancy": data2015[i_15]["Life_expectancy"],
+              "Corruption": data2015[i_15]["Corruption"]
+            },
+            { "Country": line_country,
+              "Year": 2016,
+              "Freedom": data2016[i_16]["Freedom"],
+              "Gdp": data2016[i_16]["Gdp"],
+              "Generosity": data2016[i_16]["Generosity"],
+              "Life_expectancy": data2016[i_16]["Life_expectancy"],
+              "Corruption": data2016[i_16]["Corruption"]
+            },
+            { "Country": line_country,
+              "Year": 2017,
+              "Freedom": data2017[i_17]["Freedom"],
+              "Gdp": data2017[i_17]["Gdp"],
+              "Generosity": data2017[i_17]["Generosity"],
+              "Life_expectancy": data2017[i_17]["Life_expectancy"],
+              "Corruption": data2017[i_17]["Corruption"]
+            },
+            { "Country": line_country,
+              "Year": 2018,
+              "Freedom": data2018[i_18]["Freedom"],
+              "Gdp": data2018[i_18]["Gdp"],
+              "Generosity": data2018[i_18]["Generosity"],
+              "Life_expectancy": data2018[i_18]["Life_expectancy"],
+              "Corruption": data2018[i_18]["Corruption"]
+            },
+            { "Country": line_country,
+              "Year": 2019,
+              "Freedom": data2019[i_19]["Freedom"],
+              "Gdp": data2019[i_19]["Gdp"],
+              "Generosity": data2019[i_19]["Generosity"],
+              "Life_expectancy": data2019[i_19]["Life_expectancy"],
+              "Corruption": data2019[i_19]["Corruption"]
+            }
+          ]
+
+          // generator the lines for each component for that country
+          Finland_data.forEach( (d, i) => {
+
+            // LINE GENERATOR
+            let freedomLineGen = d3.line()
+                  .x( d => timeScale(d['Year']) )
+                  .y( d => freedomScale(d["Freedom"]) )
+            chartArea_LC.append("path")
+             .datum(Finland_data)
+             .attr("class", "line")
+             .attr("fill", "none")
+             .attr("stroke", "#66c2a5")
+             .attr("stroke-width", 3)
+             .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+             .attr("d", freedomLineGen);
+
+
+            let gdpLineGen = d3.line()
+                   .x( d => timeScale(d['Year']) )
+                   .y( d => freedomScale(d["Gdp"]) )
+            chartArea_LC.append("path")
+                .datum(Finland_data)
+                .attr("class", "line")
+                .attr("fill", "none")
+                .attr("stroke", "#fc8d62")
+                .attr("stroke-width", 3)
+                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                .attr("d", gdpLineGen);
+
+            let generosityLineGen = d3.line()
+                   .x( d => timeScale(d['Year']) )
+                   .y( d => freedomScale(d["Generosity"]) )
+            chartArea_LC.append("path")
+                .datum(Finland_data)
+                .attr("class", "line")
+                .attr("fill", "none")
+                .attr("stroke", "#8da0cb")
+                .attr("stroke-width", 3)
+                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                .attr("d", generosityLineGen);
+
+            let lifeLineGen = d3.line()
+                   .x( d => timeScale(d['Year']) )
+                   .y( d => freedomScale(d["Life_expectancy"]) )
+            chartArea_LC.append("path")
+                .datum(Finland_data)
+                .attr("class", "line")
+                .attr("fill", "none")
+                .attr("stroke", "#e78ac3")
+                .attr("stroke-width", 3)
+                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                .attr("d", lifeLineGen);
+
+            let corruptionLineGen = d3.line()
+                   .x( d => timeScale(d['Year']) )
+                   .y( d => freedomScale(d["Corruption"]) )
+            chartArea_LC.append("path")
+                .datum(Finland_data)
+                .attr("class", "line")
+                .attr("fill", "none")
+                .attr("stroke", "#ffd92f")
+                .attr("stroke-width", 3)
+                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                .attr("d", corruptionLineGen);
+
+            let socialLineGen = d3.line()
+                   .x( d => timeScale(d['Year']) )
+                   .y( d => freedomScale(d["Social_support"]) )
+            chartArea_LC.append("path")
+                .datum(Finland_data)
+                .attr("class", "line")
+                .attr("fill", "none")
+                .attr("stroke", "#e5c494")
+                .attr("stroke-width", 3)
+                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                .attr("d", socialLineGen);
+
+          });
+
+          // title of graph as the country
+          chartArea_LC.append("text")
+            .attr("x", width/2)
+            .attr("y", -5)
+            .attr("text-anchor", "middle")
+            .attr("font-size", 30)
+            .text(line_country);
+
+          // ------------------------- END OF LINE CHART ON CLICK ------------------------------
+
+
           }
 
           catch (TypeError) {
@@ -569,7 +838,8 @@
     <svg id="linePlot" width="500" height="500"></svg>
       <script>
 
-          const drawLines = async function() {
+
+        const drawLines = async function() {
             let data2015 = await d3.csv("2015.csv");
             let data2016 = await d3.csv("2016.csv");
             let data2017 = await d3.csv("2017.csv");
@@ -632,6 +902,8 @@
                        Score: country["Score"]
                      }
             })
+
+            /* BEGINNING OF CLEANING TO BE RETURNED TO
 
             // SORTING FUNCTION (to get countries in alphabet order)
                 // Source: https://www.programiz.com/javascript/examples/sort-array-objects
@@ -709,15 +981,16 @@
 
             //console.log(countries_to_remove2016);
 
+            END OF CLEANING TO BE RETURNED TO */
 
-            console.log(data2015);
+            //console.log(data2015);
             //console.log(data2016);
             //console.log(data2017);
             //console.log(data2018);
-            console.log(data2019);
+            //console.log(data2019);
 
 
-            //Finland freedom 2015-2019
+            //Country lines 2015-2019
             const svg = d3.select("svg#linePlot");
             const width = svg.attr("width");
             const height = svg.attr("height");
@@ -902,7 +1175,7 @@
 
           } // end of requestData
 
-          drawLines();
+        //drawLines();
 
       </script>
 
