@@ -212,8 +212,6 @@
             .attr("rx", 20)
             .attr("ry", 20)
 
-
-
         // PIE CHART
         //var data = [10, 5, 4, 6];
         //var data = [0, 0, 0, 0];
@@ -458,21 +456,21 @@
           //Y-axis
           chartArea_LC.append("g")
             .attr("class", "y axis")
-            .attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
+            //.attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
             .call(leftAxis_LC)
           chartArea_LC.append("g")
             .attr("class", "y gridlines")
-            .attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
+            //.attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
             .call(leftGridlines_LC);
 
           //X-axis
           chartArea_LC.append("g")
             .attr("class", "x axis")
-            .attr("transform",`translate(${margin_LC.left},${chartHeight_LC+margin_LC.top+10})`)
+            .attr("transform",`translate(${0},${chartHeight_LC+0})`)
             .call(bottomAxis_LC);
           chartArea_LC.append("g")
             .attr("class", "x gridlines")
-            .attr("transform",`translate(${margin_LC.left},${chartHeight_LC+margin_LC.top+10})`)
+            .attr("transform",`translate(${0},${chartHeight_LC+0})`)
             .style("stroke", "lightgrey")
             .call(bottomGridlines_LC);
 
@@ -502,7 +500,7 @@
               .attr("y", 50)
               .attr("text-anchor", "middle")
               .attr("font-family", "Verdana, sans-serif")
-              .style("font-size", 30)
+              .style("font-size", 25)
               .style("opacity", "1")
               .text(d3.select(this).datum().properties.name)
 
@@ -623,7 +621,7 @@
              .attr("fill", "none")
              .attr("stroke", "#66c2a5")
              .attr("stroke-width", 3)
-             .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+             //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
              .attr("d", freedomLineGen);
 
 
@@ -636,7 +634,7 @@
                 .attr("fill", "none")
                 .attr("stroke", "#fc8d62")
                 .attr("stroke-width", 3)
-                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", gdpLineGen);
 
             let generosityLineGen = d3.line()
@@ -648,7 +646,7 @@
                 .attr("fill", "none")
                 .attr("stroke", "#8da0cb")
                 .attr("stroke-width", 3)
-                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", generosityLineGen);
 
             let lifeLineGen = d3.line()
@@ -660,7 +658,7 @@
                 .attr("fill", "none")
                 .attr("stroke", "#e78ac3")
                 .attr("stroke-width", 3)
-                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", lifeLineGen);
 
             let corruptionLineGen = d3.line()
@@ -672,7 +670,7 @@
                 .attr("fill", "none")
                 .attr("stroke", "#ffd92f")
                 .attr("stroke-width", 3)
-                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", corruptionLineGen);
 
             let socialLineGen = d3.line()
@@ -684,7 +682,7 @@
                 .attr("fill", "none")
                 .attr("stroke", "#e5c494")
                 .attr("stroke-width", 3)
-                .attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
+                //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", socialLineGen);
 
           });
