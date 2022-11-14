@@ -206,6 +206,64 @@
         var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
         var pie = d3.pie();
 
+        // GLOBAL STATS - Before country clicked
+        let global_freedom_T = 0;
+        let global_gdp_T = 0;
+        let global_generosity_T = 0;
+        let global_life_expectancy_T = 0;
+        let global_corruption_T = 0;
+        let global_social_support_T = 0;
+        let global_score_T = 0;
+        happinessreport.forEach(d => {
+            global_freedom_T += Number(d['Freedom to make life choices']);
+            global_gdp_T += Number(d['GDP per capita'])
+            global_generosity_T += Number(d['Generosity'])
+            global_life_expectancy_T += Number(d['Healthy life expectancy'])
+            global_corruption_T += Number(d['Perceptions of corruption'])
+            global_social_support_T += Number(d['Social support'])
+            global_score_T += Number(d['Score'])
+        });
+
+        let global_freedom_Avg = global_freedom_T/happinessreport.length;
+        let global_gdp_Avg = global_gdp_T/happinessreport.length;
+        let global_generosity_Avg = global_generosity_T/happinessreport.length;
+        let global_life_expectancy_Avg = global_life_expectancy_T/happinessreport.length;
+        let global_corruption_Avg = global_corruption_T/happinessreport.length;
+        let global_social_support_Avg = global_social_support_T/happinessreport.length;
+        let global_score_Avg = global_score_T/happinessreport.length;
+
+        let global_data = [global_freedom_Avg, global_gdp_Avg, global_generosity_Avg, global_life_expectancy_Avg,
+          global_corruption_Avg, global_social_support_Avg];
+
+        var radius = 100;
+
+        var arc = d3.arc()
+                  .innerRadius(0) // increase for donut chart
+                  .outerRadius(radius);
+
+        var arcs = chartArea.selectAll("arc")
+                  .data(pie(global_data))
+                  .enter()
+                  .append("g")
+                  .attr("class", "arc")
+                  .attr("transform",`translate(${width/2},${2*height/5})`);
+
+        arcs.append("path")
+          .attr("fill", function(d, i) {
+              return pie_color(i);
+          })
+          .attr("d", arc);
+
+        chartArea.append("text")
+            .attr("x", width/2)
+            .attr("y", 50)
+            .attr("text-anchor", "middle")
+            .attr("font-family", "Verdana, sans-serif")
+            .style("font-size", 30)
+            .style("opacity", "1")
+            .text("Global Happiness")
+
+
         // ON CLICK Function
         mycountries.on("click", function() {
 
@@ -240,7 +298,7 @@
           let corruption = this_country[0]["Perceptions of corruption"];
           let social_support = this_country[0]["Social support"];
           let score = this_country[0]["Score"];
-          var data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
+          let data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
 
           var radius = 100;
 
