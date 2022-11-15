@@ -209,6 +209,18 @@
         var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
         var pie = d3.pie();
 
+        // --- PIE CHART DICTIONARY ---
+
+        let pie_data = [0, 0, 0, 0, 0, 0];
+        let data_dict = [
+          {"label": "Freedom of life choices", "value": pie_data[0]},
+          {"label": "GDP per capita", "value": pie_data[1]},
+          {"label": "Generosity", "value": pie_data[2]},
+          {"label": "Healthy life expectancy", "value": pie_data[3]},
+          {"label": "Perceptions of corruption", "value": pie_data[4]},
+          {"label": "Social support", "value": pie_data[5]},
+        ];
+
         // GLOBAL STATS - Before country clicked
         let global_freedom_T = 0;
         let global_gdp_T = 0;
@@ -230,8 +242,6 @@
         // Global avg happiness
         let happiness_score = Math.round(global_score_T/happinessreport.length*1000)/1000;
 
-        let pie_data = [0, 0, 0, 0, 0, 0];
-
         var radius = 100;
 
         var arc = d3.arc()
@@ -246,6 +256,17 @@
           pie_data[3] = Math.round(global_life_expectancy_T/happinessreport.length*1000)/1000;
           pie_data[4] = Math.round(global_corruption_T/happinessreport.length*1000)/1000;
           pie_data[5] = Math.round(global_social_support_T/happinessreport.length*1000)/1000;
+
+          happiness_score = Math.round(global_score_T/happinessreport.length*1000)/1000;
+
+          data_dict = [
+            {"label": "Freedom of life choices", "value": pie_data[0]},
+            {"label": "GDP per capita", "value": pie_data[1]},
+            {"label": "Generosity", "value": pie_data[2]},
+            {"label": "Healthy life expectancy", "value": pie_data[3]},
+            {"label": "Perceptions of corruption", "value": pie_data[4]},
+            {"label": "Social support", "value": pie_data[5]},
+          ];
 
           let background = chartArea.append("rect")
               .attr("x", 0)
@@ -280,15 +301,7 @@
         }
         global_pie();
 
-        // --- PIE CHART DICTIONARY ---
-        let data_dict = [
-          {"label": "Freedom of life choices", "value": pie_data[0]},
-          {"label": "GDP per capita", "value": pie_data[1]},
-          {"label": "Generosity", "value": pie_data[2]},
-          {"label": "Healthy life expectancy", "value": pie_data[3]},
-          {"label": "Perceptions of corruption", "value": pie_data[4]},
-          {"label": "Social support", "value": pie_data[5]},
-        ];
+
 
         function pie_key(data_dict, happiness_score){
           data_dict.forEach( (d, i) => {
@@ -885,6 +898,7 @@
             mycountries.attr("opacity", 1);
             global_pie();
             global_lines();
+            pie_key(data_dict, happiness_score);
           }
           // If a country with opacity 0.6 is clicked, set that as target
           else if (parseFloat(d3.select(this).style("opacity")) === 0.6) {
