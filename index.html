@@ -227,18 +227,10 @@
             global_score_T += Number(d['Score'])
         });
 
-
-        // Calculate global averages
-        let freedom = Math.round(global_freedom_T/happinessreport.length*1000)/1000;
-        let gdp = Math.round(global_gdp_T/happinessreport.length*1000)/1000;
-        let generosity = Math.round(global_generosity_T/happinessreport.length*1000)/1000;
-        let life_expectancy = Math.round(global_life_expectancy_T/happinessreport.length*1000)/1000;
-        let corruption = Math.round(global_corruption_T/happinessreport.length*1000)/1000;
-        let social_support = Math.round(global_social_support_T/happinessreport.length*1000)/1000;
-
+        // Global avg happiness
         let happiness_score = Math.round(global_score_T/happinessreport.length*1000)/1000;
 
-        let pie_data = [freedom, gdp, generosity, life_expectancy, corruption, social_support];
+        let pie_data = [0, 0, 0, 0, 0, 0];
 
         var radius = 100;
 
@@ -247,6 +239,14 @@
                   .outerRadius(radius);
 
         function global_pie() {
+          // Calculate global averages
+          pie_data[0] = Math.round(global_freedom_T/happinessreport.length*1000)/1000;
+          pie_data[1] = Math.round(global_gdp_T/happinessreport.length*1000)/1000;
+          pie_data[2] = Math.round(global_generosity_T/happinessreport.length*1000)/1000;
+          pie_data[3] = Math.round(global_life_expectancy_T/happinessreport.length*1000)/1000;
+          pie_data[4] = Math.round(global_corruption_T/happinessreport.length*1000)/1000;
+          pie_data[5] = Math.round(global_social_support_T/happinessreport.length*1000)/1000;
+
           let background = chartArea.append("rect")
               .attr("x", 0)
               .attr("y", 0)
@@ -879,11 +879,12 @@
             mycountries.attr("opacity", 0.6);
             d3.select(this).attr("opacity", 1);
           }
-          // If map opacity is 0.6 and a country is reclicked, set all opacities to 1
+          // If map opacity is 0.6 and a country is reclicked, set all opacities to 1, and return secondary graphs to global values
           else if ( parseFloat(d3.select(this).style("opacity")) === 1 &&
                     parseFloat(d3.select(".countries").style("opacity")) === 0.6 ) {
             mycountries.attr("opacity", 1);
-            //global_pie();
+            global_pie();
+            global_lines();
           }
           // If a country with opacity 0.6 is clicked, set that as target
           else if (parseFloat(d3.select(this).style("opacity")) === 0.6) {
