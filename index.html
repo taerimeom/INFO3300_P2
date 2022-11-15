@@ -38,6 +38,20 @@
         const worldmap = await d3.json("countries-50m.json");
         const happinessreport = await d3.csv("2019.csv");
 
+        /*
+        console.log(worldmap["objects"]["countries"]["geometries"])
+
+        let i_Antartica = worldmap["objects"]["countries"]["geometries"].findIndex((element) => (element["properties"]["name"] == "Antarctica"));
+        //data2015[i]["Country"] = "United States of America"
+        console.log(i_Antartica) //239
+
+        worldmap = worldmap.filter(d =>
+              worldmap["objects"]["countries"]["geometries"][239] != 'Antartica'
+            );
+        */
+
+        worldmap["objects"]["countries"]["geometries"].splice(239);
+
         ////////////////////////// Data Cleaning /////////////////////////////////
         // List of names that need to be manually matched between datasets
 
@@ -249,7 +263,7 @@
         // PIE CHART
         //var data = [10, 5, 4, 6];
         //var data = [0, 0, 0, 0];
-        var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
+        var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#7aabff","#e78ac3","#ffd92f","#9467bd"]);
         var pie = d3.pie();
 
         // --- PIE CHART DICTIONARY ---
@@ -338,9 +352,9 @@
               .attr("y", 50)
               .attr("text-anchor", "middle")
               .attr("font-family", "Verdana, sans-serif")
-              .style("font-size", 30)
+              .style("font-size", 25)
               .style("opacity", "1")
-              .text("Global Happiness")
+              .text("Average Global Happiness")
 
           chartArea.append("text")
               .attr("x", width/2)
@@ -367,6 +381,7 @@
               .attr("x", 50)
               .attr("y", chartHeight - (40 + 20*i))
               .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 14)
               .text(d["label"] + ": ");
 
             chartArea.append("text")
@@ -374,6 +389,7 @@
               .attr("y", chartHeight - (40 + 20*i))
               .attr("text-anchor", "end")
               .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 14)
               .text(d["value"]);
 
             chartArea.append("circle")
@@ -395,6 +411,7 @@
             .attr("x", 50)
             .attr("y", chartHeight - 10)
             .attr("font-family", "Verdana, sans-serif")
+            .attr("font-size", 14)
             .text("Total Happiness Score: ");
 
           chartArea.append("text")
@@ -402,6 +419,7 @@
             .attr("y", chartHeight - 10)
             .attr("text-anchor", "end")
             .attr("font-family", "Verdana, sans-serif")
+            .attr("font-size", 14)
             .text(happiness_score);
         }
 
@@ -455,7 +473,7 @@
                    Generosity: country["Generosity"],
                    Life_expectancy: country["Healthy life expectancy"],
                    Corruption: country["Perceptions of corruption"],
-                   //Social_support: country["Social support"],
+                   Social_support: country["Social support"],
                    Score: country["Score"]
                   }
         });
@@ -466,7 +484,7 @@
                    Generosity: country["Generosity"],
                    Life_expectancy: country["Healthy life expectancy"],
                    Corruption: country["Perceptions of corruption"],
-                   //Social_support: country["Social support"],
+                   Social_support: country["Social support"],
                    Score: country["Score"]
                  }
         })
@@ -510,7 +528,7 @@
         const svg_LC = d3.select("svg#linePlot");
         const width_LC = svg_LC.attr("width");
         const height_LC = svg_LC.attr("height");
-        const margin_LC = {top: 30, right: 40, bottom: 80, left: 40};
+        const margin_LC = {top: 70, right: 30, bottom: 65, left: 80};
         const chartWidth_LC = width_LC - margin_LC.left - margin_LC.right;
         const chartHeight_LC = height_LC - margin_LC.top - margin_LC.bottom;
 
@@ -543,7 +561,6 @@
                               .tickFormat("")
 
 
-
         // X-AXIS (axisBottom)
         const timeExtent = d3.extent(years, d => d['Year']);
         const timeScale = d3.scaleLinear().domain(timeExtent).range([0, chartWidth_LC]);
@@ -558,11 +575,13 @@
 
         function setChart(){
           chartArea_LC.append("rect")
-              .attr("x", -25)
-              .attr("y", -10)
+              .attr("x", -80)
+              .attr("y", -70)
               .attr("width", width_LC)
               .attr("height", height_LC)
               .attr("fill", "lightgrey")
+              .attr("rx", 20)
+              .attr("ry", 20)
 
 
           //draw background
@@ -583,6 +602,17 @@
             //.attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
             .call(leftGridlines_LC);
 
+          // Y-axis label
+          chartArea_LC.append("text")
+              .attr("class", "y label")
+              .attr("text-anchor", "end")
+              .attr("x", -chartHeight_LC/2+30)
+              .attr("y", -50)
+              .attr("transform", "rotate(-90)")
+              .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 13)
+              .text("Category Rating");
+
           //X-axis
           chartArea_LC.append("g")
             .attr("class", "x axis")
@@ -593,6 +623,16 @@
             .attr("transform",`translate(${0},${chartHeight_LC+0})`)
             .style("stroke", "grey")
             .call(bottomGridlines_LC);
+
+          // X-Axis Label
+          chartArea_LC.append("text")
+              .attr("class", "x label")
+              .attr("text-anchor", "middle")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", height_LC-90)
+              .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 13)
+              .text("Year");
 
         }
 
@@ -632,7 +672,7 @@
               "Gdp": data2015[i_15]["Gdp"],
               "Generosity": data2015[i_15]["Generosity"],
               "Life_expectancy": data2015[i_15]["Life_expectancy"],
-              "Corruption": data2015[i_15]["Corruption"]
+              "Corruption": data2015[i_15]["Corruption"],
             },
             { "Country": line_country,
               "Year": 2016,
@@ -640,7 +680,7 @@
               "Gdp": data2016[i_16]["Gdp"],
               "Generosity": data2016[i_16]["Generosity"],
               "Life_expectancy": data2016[i_16]["Life_expectancy"],
-              "Corruption": data2016[i_16]["Corruption"]
+              "Corruption": data2016[i_16]["Corruption"],
             },
             { "Country": line_country,
               "Year": 2017,
@@ -648,7 +688,7 @@
               "Gdp": data2017[i_17]["Gdp"],
               "Generosity": data2017[i_17]["Generosity"],
               "Life_expectancy": data2017[i_17]["Life_expectancy"],
-              "Corruption": data2017[i_17]["Corruption"]
+              "Corruption": data2017[i_17]["Corruption"],
             },
             { "Country": line_country,
               "Year": 2018,
@@ -664,9 +704,23 @@
               "Gdp": data2019[i_19]["Gdp"],
               "Generosity": data2019[i_19]["Generosity"],
               "Life_expectancy": data2019[i_19]["Life_expectancy"],
-              "Corruption": data2019[i_19]["Corruption"]
+              "Corruption": data2019[i_19]["Corruption"],
+              "Social_support": data2019[i_19]["Social_support"]
             }
           ]
+
+          let country_social = [
+            { "Country": line_country,
+              "Year": 2018,
+              "Social_support": data2018[i_18]["Social_support"]
+            },
+            { "Country": line_country,
+              "Year": 2019,
+              "Social_support": data2018[i_19]["Social_support"]
+            }
+          ]
+
+          console.log(Finland_data)
 
           // generator the lines for each component for that country
           Finland_data.forEach( (d, i) => {
@@ -691,7 +745,7 @@
                 .datum(Finland_data)
                 .attr("class", "line")
                 .attr("fill", "none")
-                .attr("stroke", "#8da0cb")
+                .attr("stroke", "#7aabff")
                 .attr("stroke-width", 3)
                 //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", generosityLineGen);
@@ -712,10 +766,10 @@
                 //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", corruptionLineGen);
             chartArea_LC.append("path")
-                .datum(Finland_data)
+                .datum(country_social)
                 .attr("class", "line")
                 .attr("fill", "none")
-                .attr("stroke", "#e5c494")
+                .attr("stroke", "#9467bd")
                 .attr("stroke-width", 3)
                 //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", socialLineGen);
@@ -763,14 +817,12 @@
             {"Year": 2019, "Corruption": data2019.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2019.length}
           ]
           const global_social = [
-            {"Year": 2015, "Social_support": data2015.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2015.length},
-            {"Year": 2016, "Social_support": data2016.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2016.length},
-            {"Year": 2017, "Social_support": data2017.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2017.length},
+            //{"Year": 2015, "Social_support": data2015.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2015.length},
+            //{"Year": 2016, "Social_support": data2016.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2016.length},
+            //{"Year": 2017, "Social_support": data2017.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2017.length},
             {"Year": 2018, "Social_support": data2018.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2018.length},
             {"Year": 2019, "Social_support": data2019.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2019.length}
           ]
-
-          console.log(data2018.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0))
 
           chartArea_LC.append("path")
            .datum(global_freedom)
@@ -794,7 +846,7 @@
              .datum(global_generosity)
              .attr("class", "line")
              .attr("fill", "none")
-             .attr("stroke", "#8da0cb")
+             .attr("stroke", "#7aabff")
              .attr("stroke-width", 3)
              //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
              .attr("d", generosityLineGen);
@@ -821,10 +873,30 @@
               .datum(global_social)
               .attr("class", "line")
               .attr("fill", "none")
-              .attr("stroke", "#e5c494")
+              .attr("stroke", "#9467bd")
               .attr("stroke-width", 3)
               //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
               .attr("d", socialLineGen);
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -40)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Average Global Happiness by Category")
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -20)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Over Time (2015-2019)")
 
         }
         global_lines();
@@ -919,6 +991,26 @@
             }
 
           // ------------------------- LINE CHART ON CLICK ------------------------------
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -40)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text(`Happiness in ${d3.select(this).datum().properties.name} by Category`)
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -20)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Over Time (2015-2019)")
 
           try { //LINE CHART TRY CATCH
             let line_country = d3.select(this).datum().properties.name;
