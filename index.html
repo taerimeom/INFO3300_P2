@@ -206,7 +206,7 @@
         // PIE CHART
         //var data = [10, 5, 4, 6];
         //var data = [0, 0, 0, 0];
-        var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#ffd92f","#e5c494"]);
+        var pie_color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#7aabff","#e78ac3","#ffd92f","#9467bd"]);
         var pie = d3.pie();
 
         // --- PIE CHART DICTIONARY ---
@@ -412,7 +412,7 @@
                    Generosity: country["Generosity"],
                    Life_expectancy: country["Healthy life expectancy"],
                    Corruption: country["Perceptions of corruption"],
-                   //Social_support: country["Social support"],
+                   Social_support: country["Social support"],
                    Score: country["Score"]
                   }
         });
@@ -423,7 +423,7 @@
                    Generosity: country["Generosity"],
                    Life_expectancy: country["Healthy life expectancy"],
                    Corruption: country["Perceptions of corruption"],
-                   //Social_support: country["Social support"],
+                   Social_support: country["Social support"],
                    Score: country["Score"]
                  }
         })
@@ -589,7 +589,7 @@
               "Gdp": data2015[i_15]["Gdp"],
               "Generosity": data2015[i_15]["Generosity"],
               "Life_expectancy": data2015[i_15]["Life_expectancy"],
-              "Corruption": data2015[i_15]["Corruption"]
+              "Corruption": data2015[i_15]["Corruption"],
             },
             { "Country": line_country,
               "Year": 2016,
@@ -597,7 +597,7 @@
               "Gdp": data2016[i_16]["Gdp"],
               "Generosity": data2016[i_16]["Generosity"],
               "Life_expectancy": data2016[i_16]["Life_expectancy"],
-              "Corruption": data2016[i_16]["Corruption"]
+              "Corruption": data2016[i_16]["Corruption"],
             },
             { "Country": line_country,
               "Year": 2017,
@@ -605,7 +605,7 @@
               "Gdp": data2017[i_17]["Gdp"],
               "Generosity": data2017[i_17]["Generosity"],
               "Life_expectancy": data2017[i_17]["Life_expectancy"],
-              "Corruption": data2017[i_17]["Corruption"]
+              "Corruption": data2017[i_17]["Corruption"],
             },
             { "Country": line_country,
               "Year": 2018,
@@ -621,9 +621,23 @@
               "Gdp": data2019[i_19]["Gdp"],
               "Generosity": data2019[i_19]["Generosity"],
               "Life_expectancy": data2019[i_19]["Life_expectancy"],
-              "Corruption": data2019[i_19]["Corruption"]
+              "Corruption": data2019[i_19]["Corruption"],
+              "Social_support": data2019[i_19]["Social_support"]
             }
           ]
+
+          let country_social = [
+            { "Country": line_country,
+              "Year": 2018,
+              "Social_support": data2018[i_18]["Social_support"]
+            },
+            { "Country": line_country,
+              "Year": 2019,
+              "Social_support": data2018[i_19]["Social_support"]
+            }
+          ]
+
+          console.log(Finland_data)
 
           // generator the lines for each component for that country
           Finland_data.forEach( (d, i) => {
@@ -648,7 +662,7 @@
                 .datum(Finland_data)
                 .attr("class", "line")
                 .attr("fill", "none")
-                .attr("stroke", "#8da0cb")
+                .attr("stroke", "#7aabff")
                 .attr("stroke-width", 3)
                 //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", generosityLineGen);
@@ -669,10 +683,10 @@
                 //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", corruptionLineGen);
             chartArea_LC.append("path")
-                .datum(Finland_data)
+                .datum(country_social)
                 .attr("class", "line")
                 .attr("fill", "none")
-                .attr("stroke", "#e5c494")
+                .attr("stroke", "#9467bd")
                 .attr("stroke-width", 3)
                 //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
                 .attr("d", socialLineGen);
@@ -720,14 +734,12 @@
             {"Year": 2019, "Corruption": data2019.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2019.length}
           ]
           const global_social = [
-            {"Year": 2015, "Social_support": data2015.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2015.length},
-            {"Year": 2016, "Social_support": data2016.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2016.length},
-            {"Year": 2017, "Social_support": data2017.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2017.length},
+            //{"Year": 2015, "Social_support": data2015.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2015.length},
+            //{"Year": 2016, "Social_support": data2016.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2016.length},
+            //{"Year": 2017, "Social_support": data2017.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2017.length},
             {"Year": 2018, "Social_support": data2018.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2018.length},
             {"Year": 2019, "Social_support": data2019.reduce((accumulator, object) => { return accumulator + Number(object["Social_support"]);}, 0)/data2019.length}
           ]
-
-          console.log(data2018.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0))
 
           chartArea_LC.append("path")
            .datum(global_freedom)
@@ -751,7 +763,7 @@
              .datum(global_generosity)
              .attr("class", "line")
              .attr("fill", "none")
-             .attr("stroke", "#8da0cb")
+             .attr("stroke", "#7aabff")
              .attr("stroke-width", 3)
              //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
              .attr("d", generosityLineGen);
@@ -778,7 +790,7 @@
               .datum(global_social)
               .attr("class", "line")
               .attr("fill", "none")
-              .attr("stroke", "#e5c494")
+              .attr("stroke", "#9467bd")
               .attr("stroke-width", 3)
               //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
               .attr("d", socialLineGen);
