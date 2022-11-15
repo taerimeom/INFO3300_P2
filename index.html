@@ -38,6 +38,20 @@
         const worldmap = await d3.json("countries-50m.json");
         const happinessreport = await d3.csv("2019.csv");
 
+        /*
+        console.log(worldmap["objects"]["countries"]["geometries"])
+
+        let i_Antartica = worldmap["objects"]["countries"]["geometries"].findIndex((element) => (element["properties"]["name"] == "Antarctica"));
+        //data2015[i]["Country"] = "United States of America"
+        console.log(i_Antartica) //239
+
+        worldmap = worldmap.filter(d =>
+              worldmap["objects"]["countries"]["geometries"][239] != 'Antartica'
+            );
+        */
+
+        worldmap["objects"]["countries"]["geometries"].splice(239);
+
         ////////////////////////// Data Cleaning /////////////////////////////////
         // List of names that need to be manually matched between datasets
 
