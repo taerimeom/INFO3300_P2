@@ -13,7 +13,7 @@
       }
 
       .gridlines line {
-        stroke: #bbb;
+        stroke: #a1a1a1;
       }
   </style>
 </head>
@@ -298,6 +298,15 @@
               .style("font-size", 30)
               .style("opacity", "1")
               .text("Global Happiness")
+
+          chartArea.append("text")
+              .attr("x", width/2)
+              .attr("y", 75)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Most Recent Data (2019)")
         }
         global_pie();
 
@@ -505,6 +514,13 @@
 
 
         function setChart(){
+          chartArea_LC.append("rect")
+              .attr("x", -25)
+              .attr("y", -10)
+              .attr("width", width_LC)
+              .attr("height", height_LC)
+              .attr("fill", "lightgrey")
+
 
           //draw background
           chartArea_LC.append("rect")
@@ -512,7 +528,7 @@
             .attr("y", 0)
             .attr("width", chartWidth_LC)
             .attr("height", chartHeight_LC)
-            .attr("fill", "white");
+            .attr("fill", "lightgrey");
 
           //Y-axis
           chartArea_LC.append("g")
@@ -532,7 +548,7 @@
           chartArea_LC.append("g")
             .attr("class", "x gridlines")
             .attr("transform",`translate(${0},${chartHeight_LC+0})`)
-            .style("stroke", "lightgrey")
+            .style("stroke", "grey")
             .call(bottomGridlines_LC);
 
         }
