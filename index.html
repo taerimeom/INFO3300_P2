@@ -28,7 +28,7 @@
         style="border:1px solid black; border-radius: 20px"></svg>
     <svg id= "countryChart" height="480" width="400" ></svg>
     <svg id="linePlot" width="400" height="480"></svg>
-    <svg id="maplegend" width="500" height="40"></svg>
+    <svg id="maplegend" width="500" height="75"></svg>
 
     <script>
 
@@ -160,34 +160,77 @@
             }
         }
         // -- Map color scale legend --
-
+          // http://using-d3js.com/04_05_sequential_scales.html
           var data = Array.from(Array(100).keys());
 
           var mapScale = d3.scaleSequential(d3.interpolateYlGnBu)
               .domain([99,0]); //flipped domain to make it blue to yellow
 
-              const svg_legend = d3.select("svg#maplegend");
-              const legend_width = svg_legend.attr("width");
+          const svg_legend = d3.select("svg#maplegend");
+          //const legend_width = svg_legend.attr("width");
 
           var xScale = d3.scaleLinear()
               .domain([0,99])
-              .range([0, legend_width]);
+              .range([0, 375]);
 
           var u = d3.select("#maplegend")
               .selectAll("rect")
               .data(data)
               .enter()
               .append("rect")
-              .attr("x", (d) => Math.ceil(xScale(d)))
+              .attr("x", (d) => Math.floor(xScale(d))+50)
               .attr("y", 0)
-              .attr("height", 40)
+              .attr("height", 30)
               .attr("width", (d) => {
                   if (d == 99) {
                       return 6;
                   }
-                  return Math.ceil(xScale(d+1)) - Math.ceil(xScale(d)) + 1;
+                  return Math.floor(xScale(d+1)) - Math.floor(xScale(d)) + 1;
                })
               .attr("fill", (d) => mapScale(d));
+
+          svg_legend.append('line')
+                    .attr('x1', 50)
+                    .attr('y1', 0)
+                    .attr('x2', 50)
+                    .attr('y2', 40)
+                    .attr('stroke', 'black')
+
+          svg_legend.append('line')
+                    .attr('x1', 430)
+                    .attr('y1', 0)
+                    .attr('x2', 430)
+                    .attr('y2', 40)
+                    .attr('stroke', 'black')
+
+          svg_legend.append('text')
+                    .attr("font-family", "Verdana, sans-serif")
+                    .text('2.85')
+                    .attr('x', 25)
+                    .attr('y', 55)
+                    .style('font-size', '12px' )
+          svg_legend.append('text')
+                    .attr("font-family", "Verdana, sans-serif")
+                    .text('7.77')
+                    .attr('x', 420)
+                    .attr('y', 55)
+                    .style('font-size', '12px' )
+
+          svg_legend.append('text')
+                    .attr("font-family", "Verdana, sans-serif")
+                    .text('least happy')
+                    .attr('x', 25)
+                    .attr('y', 70)
+                    .style('font-size', '12px' )
+
+          svg_legend.append('text')
+                    .attr("font-family", "Verdana, sans-serif")
+                    .text('happiest')
+                    .attr('x', 420)
+                    .attr('y', 70)
+                    .style('font-size', '12px' )
+
+
 
         //////////////////////////////////////////////////////////////////////////
 
