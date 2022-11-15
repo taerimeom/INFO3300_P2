@@ -295,9 +295,9 @@
               .attr("y", 50)
               .attr("text-anchor", "middle")
               .attr("font-family", "Verdana, sans-serif")
-              .style("font-size", 30)
+              .style("font-size", 25)
               .style("opacity", "1")
-              .text("Global Happiness")
+              .text("Average Global Happiness")
 
           chartArea.append("text")
               .attr("x", width/2)
@@ -324,6 +324,7 @@
               .attr("x", 50)
               .attr("y", chartHeight - (40 + 20*i))
               .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 14)
               .text(d["label"] + ": ");
 
             chartArea.append("text")
@@ -352,6 +353,7 @@
             .attr("x", 50)
             .attr("y", chartHeight - 10)
             .attr("font-family", "Verdana, sans-serif")
+            .attr("font-size", 14)
             .text("Total Happiness Score: ");
 
           chartArea.append("text")
@@ -467,7 +469,7 @@
         const svg_LC = d3.select("svg#linePlot");
         const width_LC = svg_LC.attr("width");
         const height_LC = svg_LC.attr("height");
-        const margin_LC = {top: 30, right: 40, bottom: 80, left: 40};
+        const margin_LC = {top: 70, right: 30, bottom: 65, left: 80};
         const chartWidth_LC = width_LC - margin_LC.left - margin_LC.right;
         const chartHeight_LC = height_LC - margin_LC.top - margin_LC.bottom;
 
@@ -498,7 +500,6 @@
         let leftGridlines_LC = d3.axisLeft(freedomScale)
                               .tickSize(-chartWidth_LC-10)
                               .tickFormat("")
-
 
 
         // X-AXIS (axisBottom)
@@ -540,6 +541,17 @@
             //.attr("transform",`translate(${margin_LC.left-10},${margin_LC.top})`)
             .call(leftGridlines_LC);
 
+          // Y-axis label
+          chartArea_LC.append("text")
+              .attr("class", "y label")
+              .attr("text-anchor", "end")
+              .attr("x", -chartHeight_LC/2)
+              .attr("y", -50)
+              .attr("transform", "rotate(-90)")
+              .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 15)
+              .text("Category Rating");
+
           //X-axis
           chartArea_LC.append("g")
             .attr("class", "x axis")
@@ -550,6 +562,16 @@
             .attr("transform",`translate(${0},${chartHeight_LC+0})`)
             .style("stroke", "grey")
             .call(bottomGridlines_LC);
+
+          // X-Axis Label
+          chartArea_LC.append("text")
+              .attr("class", "x label")
+              .attr("text-anchor", "middle")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", height_LC-90)
+              .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 15)
+              .text("Year");
 
         }
 
