@@ -37,14 +37,24 @@
         font-weight: normal;
         font-size: 15px;
       }
+      div#maincontent{
+        margin-left: 50px;
+        margin-right: 50px;
+      }
+      div#description{
+        background-color: lightgrey;
+        border-radius: 20px;
+        padding: 20px;
+        width: 1000px;
+        margin-left: 170px;
+        margin-right: 170px;
+      }
       p#description{
-        margin-left: 200px;
         text-align: center;
         width: 1000px;
       }
       ul{
         width: 800px;
-        margin-left: 250px;
       }
       li{
         margin-bottom:10px;
@@ -54,7 +64,8 @@
 </head>
 
 <body>
-  <p id="p1">
+  <div id="maincontent">
+    <p id="p1">
 
     <h1>INFO 3300 Project 2</h1>
     <h3>by Fatima Yuen (fy46), Katherine Vella (skv25), Lea Jih-Vieira (laj74), Taerim Eom (te89)</h3>
@@ -269,8 +280,6 @@
                     .attr('x', 400)
                     .attr('y', 60)
                     .style('font-size', '12px' )
-
-
 
         //////////////////////////////////////////////////////////////////////////
 
@@ -1110,48 +1119,27 @@
 
     </script>
   </p>
+</div>
 
-  <p id=description>
-    <b> What do these values mean? </b>
-    </br>
-    </br>
-    The Gallup World Poll self-describes as "a 100-year initiative to measure the will of every person on earth."
-    GWP's annual World Happiness Report ranks national happiness as a summation of various indications of quality of life.
-    Each categorical value represents the estimated extent to which that factor contributes to the overall happiness of a nation.
-    Here's how they were calculated:
-    <ul>
-      <li> <b>Social Support:</b> the national average of binary responses to the GWP question “If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?” for a given country
-      <li> <b>Perceptions of Corruption:</b> the national average of survey responses to two questions in the GWP: “Is corruption widespread throughout the government or not” and “Is corruption widespread within businesses or not?” for a given country
-      <li> <b>Healthy Life Expectancy:</b> healthy life expectancies at birth are based on the data extracted from the World Health Organization’s (WHO) Global Health Observatory data repository
-      <li> <b>Generosity:</b> the residual of the regressing national average of response to the GWP question “Have you donated money to a charity in the past month?” on GDP per capita for a given country
-      <li> <b>GDP per Capita:</b> the GDP statistic in purchasing power parity at constant international dollar prices for a given country
-      <li> <b>Freedom to Make Life Choices:</b> the national average of responses to the GWP question “Are you satisfied or dissatisfied with your freedom to choose what you do with your life?” for a given country
-    </ul>
-
-    <svg id= "description" height="100" width="1315"
-    style= "border:1px solid black; border-radius: 20px"</svg>
-
-    <script>
-    // Visualization Constants Setup
-        const svg_des = d3.select('svg#description');
-        const width_des = svg_des.attr('width');
-        const height_des = svg_des.attr('height');
-        const margins = {top: 0, right: 0, bottom: 0, left: 0};
-        const chartWidth_des = width_des - margins.left - margins.right;
-        const chartHeight_des = height_des - margins.top - margins.bottom;
-
-        let chartArea_des = svg_des.append("g")
-                                 .attr("id", "points")
-                                 .attr("transform",`translate(${margins.left}, ${margins.top})`);
-
-        chartArea_des.append("rect")
-          .attr("x", 0)
-          .attr("y", 0)
-          .attr("width", width_des)
-          .attr("height", height_des)
-          .attr("fill", "lightgrey")
-    </script>
-  </p>
+  <div id="description">
+    <p id=description>
+      <b> What do these values mean? </b>
+      </br>
+      </br>
+      The Gallup World Poll self-describes as "a 100-year initiative to measure the will of every person on earth."
+      GWP's annual World Happiness Report ranks national happiness as a summation of various indications of quality of life.
+      Each categorical value represents the estimated extent to which that factor contributes to the overall happiness of a nation.
+      Here's how they were calculated:
+      <ul>
+        <li> <b>Social Support:</b> the national average of binary responses to the GWP question “If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?” for a given country
+        <li> <b>Perceptions of Corruption:</b> the national average of survey responses to two questions in the GWP: “Is corruption widespread throughout the government or not” and “Is corruption widespread within businesses or not?” for a given country
+        <li> <b>Healthy Life Expectancy:</b> healthy life expectancies at birth are based on the data extracted from the World Health Organization’s (WHO) Global Health Observatory data repository
+        <li> <b>Generosity:</b> the residual of the regressing national average of response to the GWP question “Have you donated money to a charity in the past month?” on GDP per capita for a given country
+        <li> <b>GDP per Capita:</b> the GDP statistic in purchasing power parity at constant international dollar prices for a given country
+        <li> <b>Freedom to Make Life Choices:</b> the national average of responses to the GWP question “Are you satisfied or dissatisfied with your freedom to choose what you do with your life?” for a given country
+      </ul>
+    </p>
+  </div>
 
 
 </body>
