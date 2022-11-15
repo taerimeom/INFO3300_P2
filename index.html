@@ -158,14 +158,14 @@
             .data(data)
             .enter()
             .append("rect")
-            .attr("x", (d) => Math.ceil(xScale(d)))
+            .attr("x", (d) => Math.floor(xScale(d)))
             .attr("y", 0)
             .attr("height", 40)
             .attr("width", (d) => {
                 if (d == 99) {
                     return 6;
                 }
-                return Math.ceil(xScale(d+1)) - Math.ceil(xScale(d)) + 1;
+                return Math.floor(xScale(d+1)) - Math.floor(xScale(d)) + 1;
              })
             .attr("fill", (d) => mapScale(d));
 
