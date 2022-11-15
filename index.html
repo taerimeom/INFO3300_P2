@@ -183,7 +183,7 @@
               .append("rect")
               .attr("x", (d) => Math.floor(xScale(d))+50)
               .attr("y", 0)
-              .attr("height", 30)
+              .attr("height", 20)
               .attr("width", (d) => {
                   if (d == 99) {
                       return 6;
@@ -196,41 +196,42 @@
                     .attr('x1', 50)
                     .attr('y1', 0)
                     .attr('x2', 50)
-                    .attr('y2', 40)
+                    .attr('y2', 30)
                     .attr('stroke', 'black')
 
           svg_legend.append('line')
                     .attr('x1', 430)
                     .attr('y1', 0)
                     .attr('x2', 430)
-                    .attr('y2', 40)
+                    .attr('y2', 30)
                     .attr('stroke', 'black')
 
           svg_legend.append('text')
                     .attr("font-family", "Verdana, sans-serif")
                     .text('2.85')
-                    .attr('x', 25)
-                    .attr('y', 55)
+                    .attr('x', 35)
+                    .attr('y', 45)
                     .style('font-size', '12px' )
           svg_legend.append('text')
                     .attr("font-family", "Verdana, sans-serif")
                     .text('7.77')
-                    .attr('x', 420)
-                    .attr('y', 55)
+                    .attr('x', 415)
+                    .attr('y', 45)
                     .style('font-size', '12px' )
 
           svg_legend.append('text')
                     .attr("font-family", "Verdana, sans-serif")
-                    .text('least happy')
-                    .attr('x', 25)
-                    .attr('y', 70)
+                    .text('Least Happy')
+                    .attr('x', 50)
+                    .attr('y', 60)
+                    .attr("text-anchor", "middle")
                     .style('font-size', '12px' )
 
           svg_legend.append('text')
                     .attr("font-family", "Verdana, sans-serif")
-                    .text('happiest')
-                    .attr('x', 420)
-                    .attr('y', 70)
+                    .text('Most Happy')
+                    .attr('x', 400)
+                    .attr('y', 60)
                     .style('font-size', '12px' )
 
 
@@ -259,12 +260,12 @@
 
         let pie_data = [0, 0, 0, 0, 0, 0];
         let data_dict = [
-          {"label": "Freedom of life choices", "value": pie_data[0]},
-          {"label": "GDP per capita", "value": pie_data[1]},
+          {"label": "Freedom of Life Choices", "value": pie_data[0]},
+          {"label": "GDP per Capita", "value": pie_data[1]},
           {"label": "Generosity", "value": pie_data[2]},
-          {"label": "Healthy life expectancy", "value": pie_data[3]},
-          {"label": "Perceptions of corruption", "value": pie_data[4]},
-          {"label": "Social support", "value": pie_data[5]},
+          {"label": "Healthy Life Expectancy", "value": pie_data[3]},
+          {"label": "Perceptions of Corruption", "value": pie_data[4]},
+          {"label": "Social Support", "value": pie_data[5]},
         ];
 
         // GLOBAL STATS - Before country clicked
@@ -306,12 +307,12 @@
           happiness_score = Math.round(global_score_T/happinessreport.length*1000)/1000;
 
           data_dict = [
-            {"label": "Freedom of life choices", "value": pie_data[0]},
-            {"label": "GDP per capita", "value": pie_data[1]},
+            {"label": "Freedom of Life Choices", "value": pie_data[0]},
+            {"label": "GDP per Capita", "value": pie_data[1]},
             {"label": "Generosity", "value": pie_data[2]},
-            {"label": "Healthy life expectancy", "value": pie_data[3]},
-            {"label": "Perceptions of corruption", "value": pie_data[4]},
-            {"label": "Social support", "value": pie_data[5]},
+            {"label": "Healthy Life Expectancy", "value": pie_data[3]},
+            {"label": "Perceptions of Corruption", "value": pie_data[4]},
+            {"label": "Social Support", "value": pie_data[5]},
           ];
 
           let background = chartArea.append("rect")
@@ -1075,110 +1076,6 @@
   </p>
 
     <!--- VISUALIZATION 2 -->
-  <p id="p2">
 
-    <svg id="scatterplot" width="800" height="500"></svg>
-    <script>
-        const svg = d3.select("svg#scatterplot").attr("width", 800).attr("height", 500);
-        const width = svg.attr("width");
-        const height = svg.attr("height");
-
-        const margins = {top: 10, right: 10, bottom: 50, left: 50};
-        const chartWidth = width - margins.left - margins.right;
-        const chartHeight = height - margins.top - margins.bottom - 50;
-
-        let annotations = svg.append("g").attr("id","annotations");
-        let chart = svg.append('g')
-        let chartArea = svg.append("g").attr("id","points")
-                                .attr('transform',`translate(${margins.left},${margins.top})`);
-
-        d3.csv("2019.csv", d3.autoType).then((data => {
-          //console.log(data)
-          data = data.filter(d=> { return !(d['region_1'] === 'NA' || d['region_1'] === 'N/A')})
-          data.forEach(d => {
-                d['Freedom to make life choices'] = Number(d['Freedom to make life choices'])
-                d['GDP per capita'] = Number(d['GDP per capita'])
-            })
-
-            const freedomExtent = d3.extent(data, d => d['Freedom to make life choices']);
-
-            const gdpExtent = d3.extent(data, d => d['GDP per capita']);
-
-
-            let xScale = d3.scaleLinear().domain(freedomExtent).range([20, chartWidth]);
-            let yScale = d3.scaleLinear().domain(gdpExtent).range([chartHeight, 0]);
-            const colorScale = d3.scaleOrdinal(d3.schemeGnBu);
-
-            let leftAxis = d3.axisLeft(yScale);
-            chart.append('g')
-                .attr('transform',`translate(${margins.left+20},${margins.top})`)
-                .call(leftAxis);
-
-            let leftGridlines = d3.axisLeft(yScale).tickFormat("").tickSize(-chartWidth-10);
-            chart.append('g')
-                .attr('transform',`translate(${margins.left+20},${margins.top})`)
-                .call(leftGridlines);
-
-            let bottomAxis = d3.axisBottom(xScale);
-            chart.append('g')
-                .attr('transform',`translate(${margins.left},${chartHeight+margins.top})`)
-                .call(bottomAxis);
-
-            let bottomGridlines = d3.axisBottom(xScale).tickFormat("").tickSize(-chartHeight-10);
-            chart.append('g')
-                .attr('transform',`translate(${margins.left},${chartHeight+margins.top})`)
-                .call(bottomGridlines);
-
-            let xlabel = annotations.append('text')
-            .attr("x", chartWidth/2)
-            .attr("y", 450)
-            .attr("text-anchor", "middle")
-            .attr("font-family", "Verdana, sans-serif")
-            .style("font-size", 20)
-            .text("Freedom to make life choices");
-
-            let ylabel = annotations.append('text')
-            .attr("transform", "translate(30," + chartHeight/2 + ")rotate(270)")
-            .attr("text-anchor", "middle")
-            .attr("font-family", "Verdana, sans-serif")
-            .style("font-size", 20)
-            .text("GDP per capita");
-
-            const jitter = () => (Math.random() * 7) - 4;
-
-            data.forEach(function(d, i) {
-                let circle = chartArea.append("circle")
-                        .attr('cx', xScale(d['Freedom to make life choices']) + jitter())
-                        .attr('cy', yScale(d['GDP per capita'])+ jitter())
-                        .attr('r', 6)
-                        .attr('opacity', 0.5)
-                        .style('fill', colorScale(d.Score))
-
-                circle.on('mouseover', function() {
-                    d3.select(this)
-                    .transition()
-                    .duration(300)
-                    .attr('r', 8)
-                    annotations.append('text')
-                            .attr('class', 'scatter')
-                            .attr('x', 600)
-                            .attr('y', 25)
-                            .attr("text-anchor", "middle")
-                            .attr("font-family", "Verdana, sans-serif")
-                            .style("font-size", 20)
-                            .text(d['Country or region'])
-                })
-
-                circle.on('mouseout', function() {
-                    d3.select(this)
-                    .transition()
-                    .duration(300)
-                    .attr('r', 6)
-                    d3.selectAll('.scatter').remove();
-                })
-        })
-      }))
-    </script>
-  </p>
 </body>
 </html>
