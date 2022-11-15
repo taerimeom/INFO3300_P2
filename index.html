@@ -518,11 +518,13 @@
 
         function setChart(){
           chartArea_LC.append("rect")
-              .attr("x", -25)
-              .attr("y", -10)
+              .attr("x", -80)
+              .attr("y", -70)
               .attr("width", width_LC)
               .attr("height", height_LC)
               .attr("fill", "lightgrey")
+              .attr("rx", 20)
+              .attr("ry", 20)
 
 
           //draw background
@@ -819,6 +821,26 @@
               //.attr("transform",`translate(${margin_LC.left},${margin_LC.top})`)
               .attr("d", socialLineGen);
 
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -40)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Average Global Happiness by Category")
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -20)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Over Time (2015-2019)")
+
         }
         global_lines();
 
@@ -912,6 +934,26 @@
             }
 
           // ------------------------- LINE CHART ON CLICK ------------------------------
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -40)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text(`Happiness in ${d3.select(this).datum().properties.name} by Category`)
+
+          // title
+          chartArea_LC.append("text")
+              .attr("x", chartWidth_LC/2)
+              .attr("y", -20)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "Verdana, sans-serif")
+              .style("font-size", 15)
+              .style("opacity", "1")
+              .text("Over Time (2015-2019)")
 
           try { //LINE CHART TRY CATCH
             let line_country = d3.select(this).datum().properties.name;
