@@ -678,7 +678,8 @@
             {"Year": 2015, "Corruption": data2015.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2015.length},
             {"Year": 2016, "Corruption": data2016.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2016.length},
             {"Year": 2017, "Corruption": data2017.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2017.length},
-            {"Year": 2018, "Corruption": data2018.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2018.length},
+            //{"Year": 2018, "Corruption": data2018.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2018.length},
+            // 2018 returns NaN...
             {"Year": 2019, "Corruption": data2019.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0)/data2019.length}
           ]
           const global_social = [
@@ -690,7 +691,6 @@
           ]
 
           console.log(data2018.reduce((accumulator, object) => { return accumulator + Number(object["Corruption"]);}, 0))
-          //console.log(data2018.filter(d => d["Corruption"].isNaN == true))
 
           chartArea_LC.append("path")
            .datum(global_freedom)
