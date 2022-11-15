@@ -462,7 +462,12 @@
         const chartWidth_LC = width_LC - margin_LC.left - margin_LC.right;
         const chartHeight_LC = height_LC - margin_LC.top - margin_LC.bottom;
 
-        let years = [2015, 2016, 2017, 2018, 2019]
+        let years = [
+          {"Year": 2015},
+          {"Year": 2016},
+          {"Year": 2017},
+          {"Year": 2018},
+          {"Year": 2019}]
 
         svg_LC.append("rect")
             .attr("x", 0)
@@ -488,12 +493,15 @@
 
 
         // X-AXIS (axisBottom)
-        const timeExtent = d3.extent(years);
+        const timeExtent = d3.extent(years, d => d['Year']);
         const timeScale = d3.scaleLinear().domain(timeExtent).range([0, chartWidth_LC]);
         let bottomAxis_LC = d3.axisBottom(timeScale)
+          .tickFormat(d3.format("d"))
+          .ticks(5)
         let bottomGridlines_LC = d3.axisBottom(timeScale)
                                 .tickSize(-chartHeight_LC-10)
                                 .tickFormat("")
+                                .ticks(5)
 
 
         function setChart(){
