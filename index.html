@@ -332,6 +332,7 @@
               .attr("y", chartHeight - (40 + 20*i))
               .attr("text-anchor", "end")
               .attr("font-family", "Verdana, sans-serif")
+              .attr("font-size", 14)
               .text(d["value"]);
 
             chartArea.append("circle")
@@ -361,6 +362,7 @@
             .attr("y", chartHeight - 10)
             .attr("text-anchor", "end")
             .attr("font-family", "Verdana, sans-serif")
+            .attr("font-size", 14)
             .text(happiness_score);
         }
 
@@ -545,11 +547,11 @@
           chartArea_LC.append("text")
               .attr("class", "y label")
               .attr("text-anchor", "end")
-              .attr("x", -chartHeight_LC/2)
+              .attr("x", -chartHeight_LC/2+30)
               .attr("y", -50)
               .attr("transform", "rotate(-90)")
               .attr("font-family", "Verdana, sans-serif")
-              .attr("font-size", 15)
+              .attr("font-size", 13)
               .text("Category Rating");
 
           //X-axis
@@ -570,7 +572,7 @@
               .attr("x", chartWidth_LC/2)
               .attr("y", height_LC-90)
               .attr("font-family", "Verdana, sans-serif")
-              .attr("font-size", 15)
+              .attr("font-size", 13)
               .text("Year");
 
         }
